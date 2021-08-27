@@ -1,0 +1,280 @@
+---
+title: "Descriptive Statistics: Central and Variability measures"
+output: html_notebook
+---
+```{r}
+#Initial packages
+install.packages("lsr")
+```
+
+In this notebook, we'll take a look at how to explore a dataset.
+
+Any time that you get a new data set to look at, one of the first tasks that you have to do is find ways of summarising the data in a compact, easily understood fashion. This is what **descriptive statistics** is all about.
+
+#### Describing data
+
+Imagine you've conducted an experiment involving measurements from 20 animals. If you wanted to report the outcome of your experiment to an audience, you wouldn’t want to talk through each and every data point. Instead, you report a summary, such as ‘The 20 animals had an average weight of 15 grams’, thus saving your audience valuable time and mental energy. This notebook focuses on such summaries of numerical information including distributions, measures of central tendency and measures of variability. 
+
+##### What exactly is a distribution?
+
+If you throw a single dice 20 times in a row and note down how frequently each face occurs. The result of tallying all counts is a ‘frequency distribution’, which associates each possible outcome with a particular frequency value. Such a distribution is an empirically observed distribution because it is based on a set of 20 actual throws of a dice. Fig (a) below.
+
+![Empirical and theoretical distributions](/Users/lenovo1/Desktop/mtech/courses/stats/Images/fig1.png)
+
+But Fig (b) shows a theoretical distribution and represents probability rather than frequency. It depicts how probable is each outcome. In this case, all outcomes are equally probable and therefore it is a ‘uniform’ distribution because the probability is uniformly spread across all possible outcomes. It is furthermore a ‘discrete’ distribution because there are only six particular outcomes and no in-betweens. (Chapter 3, Winter B.)
+
+Apart from *looking* at how a data is distributed, the most important descriptive statistics for numerical data are those measuring the location of a frequency distribution and its spread. The location tells us something about the average or *typical* individual—where the observations are centered. The spread tells us how variable the measurements are from individual to individual—how widely scattered the observations are around the center. The proportion is the most important descriptive statistic for a categorical variable, measuring the fraction of observations in a given category. 
+
+##### But why is it needed?
+The importance of calculating some sort of a centre of a distribution seems obvious. How else do we address questions like “Which species is larger?” or “Which drug yielded the greatest response?” The importance of describing distribution spread is less obvious but no less crucial, at least in biology. In some fields of science, variability around a central value is instrument noise or measurement error, but in biology much of the variability signifies real differences among individuals. Different individuals respond differently to treatments, and this variability begs measurement. (Adapted from Chapter 3, Whitlock & Schluter, 2015)
+
+That's a lot of theory, let's dive into some data now.
+
+**Loading the Australian Football League Dataset**
+
+```{r}
+#Change the path according to your PC
+path = "/Users/lenovo1/Desktop/mtech/courses/stats/Datasets/data/"
+fileN ="aflsmall.Rdata"
+file_path = paste(path,fileN, sep = "")
+load(file_path)
+library(lsr)
+who()
+```
+
+As you can see there are multiple variables of different class and size. 
+
+Let's take a look at afl.margins variable.
+
+```{r}
+print (afl.margins)
+```
+
+This output doesn’t make it easy to get a sense of what the data is actually saying. Just “looking at the data” isn’t a terribly effective way of understanding data.
+
+Let's try to plot it.
+
+**Frequency distribution**
+
+```{r}
+hist (afl.margins)
+```
+
+As you can see, different margins in a sample will have different measurements. We can see this variability with a **frequency distribution**. The frequency of a specific measurement in a sample is the number of observations having a particular value of the measurement. The frequency distribution shows how often each value of the variable occurs in the sample. 
+
+Therefore, here we have plotted a histogram for the afl.margins variable which gives the frequency distribution of the different margin values.
+
+**Skewness**
+
+If you observe the graph, you will find that it is not entirely symmetrical. A measure of such asymmetry is called **Skewness**. If the data tend to have a lot of extreme small values (i.e., the lower tail is “longer” than the upper tail) and not so many extremely large values (left panel), then we say that the data are _negatively skewed_. On the other hand, if there are more extremely large values than extremely small ones (right panel) we say that the data are _positively skewed_.
+
+`psych` package contains a `skew()` function that you can use to calculate skewness. 
+
+Try finding the skewness for the above data for afl.margins using skew() function and also try to guess whether this data is positively or negatively skewed.
+
+```{r}
+library(psych)
+#Try finding skewness of afl.margins here
+```
+
+Although such a graphical representation gives a 'gist' of the data but it is useful to find some "summary" statistics as well.
+
+##### Measures of Central Tendency
+In most situations, the first thing that you’ll want to calculate is a measure of central tendency. That is, you’d like to know something about the “average” or “middle” of your data lies. The two most commonly used measures are the mean, median and mode.
+
+**Mean**
+
+As you've already seen in previous classes, the mean of a set of observations is just a normal, old-fashioned average: add all of the values up, and then divide by the total number of values.
+
+Try finding the mean for the first 5 values from afl.margins and then for all the values of afl.margins
+```{r}
+#Don't forget to uncomment the following before running
+#afl.mean5 = 
+#afl.mean = 
+#afl.mean5
+#afl.mean
+```
+
+**Median**
+
+The second measure is the median. It is just the middle value of a set of observations. 
+*Try : Guess the median for 56, 31, 56, 8 and 32 *
+
+Probably you mentally arranged these numbers in ascending order first and then found the middle value. If there were a list of numbers like this `8, 14, 31, 32, 56, 56` . You will then find the average of middle 2 values. 
+
+Now try finding out the median for afl.margins.
+
+```{r}
+#afl.median = 
+#afl.median
+```
+
+**Difference between Mean and Median**
+
+Both of these are measures of central tendency but when to use which can be a bit confusing. In general, the mean is kind of like the “centre of gravity” of the data set, whereas the median is the “middle value” in the data.
+
+![Difference between mean and median](/Users/lenovo1/Desktop/mtech/courses/stats/Images/Fig2.png)
+*Fig 5.2 from Learning Statistics with R by D. Navarro*
+
+**Some key points**
+
+- If data is nominal scale, then it’s probably best to use the mode instead of mean or median.
+
+- If your data are ordinal scale, you’re more likely to want to use the median than the mean.
+
+- For interval and ratio scale data, either mean or median is generally acceptable. The mean has the advantage that it uses all the information in the data (which is useful when you don’t have a lot of data), but it’s very sensitive to extreme values.
+
+*You can read more about this in Section 5.1.4, Learning Statistics with R by D. Navarro*
+
+Now let's take a look at some more data:
+
+` -100,2,3,4,5,6,7,8,9,10`
+
+If you observed such data in real life, you will probably think that -100 is an **_outlier_**, a value that doesn’t really belong with the others. You might consider removing it from the data set entirely but you don’t always get such cut-and-dried examples. For instance, you might get this instead:
+
+` -15,2,3,4,5,6,7,8,9,12`
+
+The `-15` looks a bit suspicious, but not anywhere near as much as `-100` did. In this case, it’s a
+little trickier. It might be a legitimate observation, it might not. In such situations, the mean might give you an error as it is highly sensitive to one or two extreme values, and is thus not considered to be a robust measure.
+
+In such situations, one solution is to use the median or another is to use a **trimmed mean**. To calculate a trimmed mean, what you do is **discard** the most extreme examples on both ends (i.e., the largest and the smallest), and then take the mean of everything else. So, for instance, a 10% trimmed mean discards the largest 10% of the observations and the smallest 10% of the observations, and then takes the mean of the remaining 80% of the observations. This helps in taking the mean by excluding the outliers.
+
+Let's try trimming the mean for above data.
+
+```{r}
+dataset <- c(-15,2,3,4,5,6,7,8,9,12)
+mean(x = dataset, trim = .1)
+#Try calculating 5% trimmed mean for above dataset
+```
+
+**Mode**
+
+So far we've seen how to find the mean and median but what about mode. The **mode** of a sample is very simple: it is the value that occurs most frequently. The core packages in R don’t have a function for calculating the mode. However, the _lsr_ package has a function called modeOf() that does this. 
+
+Try to find out the mode for the variable afl.finalists
+
+```{r}
+#afl.mode = 
+#afl.mode
+```
+
+So far we've just seen the central measures of tendency, but we saw in the beginning that individual variability is quite important in biology. So, let's take a look at some of the measures of variability.
+
+##### Measures of variability
+
+This refers to how “spread out” are the data? How “far” away from the mean or median do the observed values tend to be?
+
+**Range**
+
+The range of a variable is very simple: it’s the biggest value minus the smallest value. Try to find out the range of afl.margins using the `range()` function.
+
+```{r}
+#Find range of afl.margins here
+```
+
+But what about the earlier data we saw, ` -100,2,3,4,5,6,7,8,9,10`. Without removing the outlier, we'll get a range of 110 but without the outlier, we'll get a range of only 8.
+
+**Inter-quartile Range (IQR)**
+That is why there is something called the interquartile range (IQR) which is like the range, but instead of calculating the difference between the biggest and smallest value, it calculates the difference between the 25th quantile and the 75th quantile. A 10% _quantile_ or _percentile_ of a data set is defined as the smallest number _x_ such that 10% of the data is less than _x_.
+
+Try finding out 25%, 75% and 50% quantiles for afl.margins and also the Inter-quartile range.
+```{r}
+#Use the functions quantile(x = afl.margins, prob = 0.2) for 20% quantile and IQR() 
+```
+
+IQR can simply be thought as the range spanned by the “middle half” of the data.
+
+**Variance**
+
+In order to find out the variance of data from the mean or median, we need to find the deviation such that abs (X~i~ - $\overline{X}$). ($\overline{X}$ is the mean of dataset). Mathematically, squared deviations are preferred over absolute deviations, and if we take the mean of all the squared deviations, we'll get the **variance** of the data. 
+
+Try finding out the variance using `var()`.
+
+```{r}
+#Use var() for finding variance of afl.margins
+```
+
+_Read more about var() function and absolute vs squared deviations in Section 5.2.4 from Learning Statistics with R by D. Navarro_
+
+**Standard Deviation**
+
+But what does this variance signify? It is very difficult to interpret the squared value and therefore, we take the _root mean square deviation_ for interpreting the spread of data points. This is called _Standard Deviation_ and is calculated by taking the square root of variance mathematically, and using the sd() function in R base package.
+
+Try to find out the standard deviation of afl.margins.
+
+```{r}
+#Find out Std dev. here
+```
+
+##### Quick cheat sheet: When to use what?
+
+- Range: 
+  - Gives full spread of data. 
+  - Very vulnerable to outliers
+
+- Interquartile range: 
+  - Gives the “middle half” of data
+  - Robust, and complements the median nicely
+  
+- Variance:
+  - Average squared deviation from the mean
+  - It’s mathematically elegant but it’s completely uninterpretable
+
+- Standard deviation:
+  - Square root of the variance
+  - Fairly elegant mathematically, and can be interpreted pretty well
+  - Complements mean and is the most popular measure of variation
+
+Now that we've learnt about the different methods of describing a data, it would've been awesome if R could summarize all of this for us together, right? 
+
+There's indeed a function called `summary()` in R.
+
+```{r}
+#Check out what summary() does for afl.margins
+```
+
+Pretty cool, no?
+
+Also try it out for other kinds of variables like `afl.finalists` or `as.character(afl.finalists)`
+
+Let's try out summarizing a dataframe as well.
+
+```{r}
+load("clinicaltrial.Rdata")
+#Check the name of the variable in the environment which contains the dataframe and try summarizing it
+```
+
+The `psych` package also has a function called `describe()` for dataframes. Don't forget to check it out too!
+
+In fact, you can also describe these statistics group wise. 
+
+For instance, run `describeBy( x=clin.trial, group=clin.trial$therapy )`
+
+```{r}
+describeBy( x=clin.trial, group=clin.trial$therapy )
+```
+Notice that, the output displays asterisks for factor variables, in order to draw your attention to the fact that the descriptive statistics that it has calculated won’t be very meaningful for those variables.
+
+Another more general command for grouping is `by()` 
+
+Try running the following chunk and compare the results with the `describeBy()` command above.
+
+```{r}
+by(data=clin.trial, INDICES=clin.trial$therapy, FUN=describe)
+#Also try replacing describe in FUN above with summary
+```
+
+What if you have multiple grouping variables? Suppose, for example, you would like to look at the average mood gain separately for all possible combinations of drug and therapy.We can use `aggregate()` command.
+
+```{r}
+aggregate( formula = mood.gain ~ drug + therapy, 
+           data = clin.trial,
+           FUN = mean) 
+#1 mood.gain by drug/therapy combination
+#2 data is in the clin.trial data frame
+#3 print out group means
+
+#Try interchanging the positions of drug and therapy above
+```
+
+That's all for today!
