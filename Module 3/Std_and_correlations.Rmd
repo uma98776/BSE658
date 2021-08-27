@@ -1,0 +1,272 @@
+---
+title: "Descriptive Statistics: Scaling and Correlations"
+output: html_notebook
+---
+
+After taking a first look at our data in the last notebook, now we want to start looking at it more closely as per our needs and requirements. 
+
+#### Scaling
+
+In simple terms, scaling refers to changing size of an object without affecting its shape.
+
+##### Linear Transformation:
+
+A linear transformation involves addition, subtraction, multiplication, or division with a constant value. For example, if you add 1 to the numbers 2, 4, and 6, the resulting numbers (3, 5, and 7) are a linear transformation of the original numbers. 
+Linear transformations are useful, because they allow you to represent your data in a metric that is suitable to you and your audience.
+
+**Centering:**
+
+‘Centering’ is a particularly common linear transformation. This linear transfor- mation is frequently applied to continuous predictor variables. 
+To center a predictor variable, subtract the mean of that predictor variable from each data point. As a result, each data point is expressed in terms of how much it is above the mean (positive score) or below the mean (negative score). Thus, subtracting the mean out of the variable expresses each data point as a mean-deviation score. The value zero now has a new meaning for this variable: it is at the ‘center’ of the variable’s distribution, namely, the mean.
+
+**Standardizing:**
+
+A second common linear transformation is ‘standardizing’ or ‘z–scoring’. For standardizing, the centered variable is divided by the standard deviation of the sample.
+
+Let's look at an example: 
+
+The following are response durations from a psycholinguistic experiment:
+
+`460ms 480ms 500ms 520ms 540ms`
+
+The mean of these five numbers is `500ms`. 
+
+Centering these numbers results in the following:
+
+`− 40ms − 20ms 0ms +20ms + 40ms`
+
+The standard deviation (learnt in last notebook) for these numbers is `~32ms`. 
+
+To ‘standardize’, we have to divide the centered data by the standard deviation. For example, the first point, `–40ms`, divided by `32ms`, yields `–1.3`. Since each data point is divided by the same number, this change qualifies as a linear transformation.
+
+As a result of standardization, you get the following numbers (rounded to one digit):
+
+`−1.3z − 0.6z 0z + 0.6z +1.3z`
+
+The raw response duration `460ms` is `–40ms` (after centering), which corresponds to being `1.3` standard deviations below the mean. Thus, standardization involves re-expressing the data in terms of **how many standard deviations they are away from the mean**.
+
+##### But why this extra effort?
+
+Standardizing is a way of getting rid of a variable’s metric. In a situation with multiple variables, each variable may have a different standard deviation, but by dividing each variable by the respective standard deviation, it is possible to convert all variables into a scale of **standard units**. This sometimes may help in making variables comparable, for example, when assessing the relative impact of multiple predictors. For example, if you can imagine we have two questionnaires - one for extraversion where you scored 2 out of 10 and the other for grumpiness where you scored 35 out of 50, then it doesn’t make a lot of sense to try to compare your raw score of 2 on the extraversion questionnaire to your raw score of 35 on the grumpiness questionnaire. The raw scores for the two variables are “about” fundamentally different things, so this would be like comparing apples to oranges. But if you standardize them, they will still become comparable in some sense.
+
+Let's also examine the score of 35 out of 50 for grumpiness. Would this mean that you're 70% grumpy? Instead of interpreting raw data this way, it would make more sense if we describe your grumpiness in terms of the overall distribution of the grumpiness of humans which is possible through  standardisation i.e. where do you lie on the grumpiness spectrum of the all humans? ;)
+
+```{r}
+#Try it out yourself
+#Define a vector with Grumpiness scores of you and your friends and find the z score for your self
+X =                        
+z = (X - mean(X)) / sd(X)
+```
+
+_Reference: Chapter 5, Winter B._
+
+#### Correlation
+
+So far we have focused entirely on how to construct descriptive statistics for a single variable. We haven’t talked about how to describe the relationships between variables in the data. To do that, we want to talk mostly about the correlation between variables.
+
+```{r}
+setwd("/Users/lenovo1/Desktop/mtech/courses/stats/Datasets/data/")
+
+#Let's load some data
+load( "parenthood.Rdata" )
+who(TRUE)
+```
+
+```{r}
+#Try describe() for the above dataframe
+```
+
+
+```{r}
+#Let's also take a graphical look at the data 
+hist(parenthood$dan.sleep)
+
+#Try plotting for the other 2 variables
+
+```
+
+But we now want to take a look at the relationship between two variables. n order to visualize that, it is better to plot a **scatter plot.** (Plotting graphs will be covered in detail a separate notebook).
+
+_Brief note on Scatterplots:_
+
+In this kind of plot, each observation corresponds to one dot: the horizontal location of the dot plots the value of the observation on one variable, and the vertical location displays its value on the other variable. In many situations you don’t really have a clear opinion about what the causal relationship is (e.g., does A cause B, or does B cause A, or does some other variable C controls both A and B). If that’s the case, it doesn’t really matter which variable you plot on the x-axis and which one you plot on the y-axis. However, in many situations you do have a pretty strong idea which variable you think is most likely to be causal, or at least you have some suspicions in that direction. If so, then it’s conventional to plot the **cause** variable on the **x-axis**, and the **effect** variable on the **y-axis**. 
+
+Suppose our goal is to draw a scatterplot displaying the relationship between the amount of sleep that Dan gets (dan.sleep) and how grumpy she is the next day (dan.grump). _Do you suspect a causal relationship here?_
+
+A simple way to plot these scatter plots is to use the scatterplot() function in the car package. 
+
+Let's load the package and get started.
+
+```{r}
+install.packages("car")
+install.packages("Rcpp")
+```
+
+
+```{r}
+library(car)
+scatterplot( dan.grump ~ dan.sleep, data = parenthood, regLine = FALSE, smooth = FALSE)
+scatterplot
+```
+
+```{r}
+#Plot a scatter plot for baby.sleep and dan.grump variables
+```
+
+
+Just by plain observation and comparison, you can see that the relationship is qualitatively the same in both cases: more sleep equals less grump! However, it’s also pretty obvious that the relationship between dan.sleep and dan.grump is stronger than the relationship between baby.sleep and dan.grump. 
+
+But what about the plot between baby.sleep and dan.sleep?
+
+```{r}
+#Plot baby sleep and dan sleep here
+```
+
+Is the direction of this plot same as the earlier plots? What about strength?
+
+##### Correlation coefficient
+
+In order to to quantitatively represent the relationships of strength and direction we discussed above, we can use correlation coefficient.
+
+The correlation coefficient (or Pearson's correlation coefficient) between two variables X and Y (sometimes denoted _r~XY~_ ) is a measure that varies from -1 to 1. When _r_ = -1 it means that we have a perfect negative relationship, and when _r_ = 1 it means we have a perfect positive relationship. When _r_ = 0, there’s no relationship at all.
+
+Look at the plots for different _r_ values:
+
+![Correlation plots](/Users/lenovo1/Desktop/mtech/courses/stats/Images/fig4.png)
+
+##### Covariance
+
+The covariance between two variables X and Y is a generalisation of the notion of the variance; it’s a mathematically simple way of describing the relationship between two variables:
+
+ \begin{align*}
+ 
+ Cov (X, Y) = \frac{1}{N-1}\sum_{i=1}^{N} (X- \overline{X} ) (Y- \overline{Y} )  \\
+ 
+ \end{align*}
+ 
+Covariance can be understood as an “average cross product” between X and Y . The covariance has the nice property that, if X and Y are entirely unrelated, then the covariance is exactly zero. If it is positive, then the covariance is also positive; and if the relationship is negative then the covariance is also negative. But as it has weird units (try seeing for yourself), it si difficult to interpret and therefore we standardise the covariance, the exact same way that the z-score standardises a raw score: by dividing by the standard deviation. However, because we have two variables that contribute to the covariance, the standardisation only works if we divide by both standard deviations. 
+
+This is what we call as the correlation coefficent, _r_:
+
+\begin{align*}
+
+ r~XY~ = \frac{Cov(X,Y)}{\sigma_{X} \sigma_{Y}}
+
+\end{align*}
+
+This way, covariance properties are retained and it also becomes interpretable.
+
+Now let's check out how to code this using cor().
+
+```{r}
+cor(x = parenthood$dan.sleep, y = parenthood$dan.grump)
+
+#Try giving the entire dataframe 'parenthood' as input in cor()
+```
+
+What did you find?
+
+##### What does r = 0.4 mean?
+
+It really depends on what you want to use the data for, and on how strong the correlations in your field tend to be.
+
+![Correlation coefficient interpretation table](/Users/lenovo1/Desktop/mtech/courses/stats/Images/fig5.png)
+ 
+Now let's take a look at this data called "Anscombe's Quartet"
+ 
+```{r}
+load( "anscombesquartet.Rdata" )
+cor( X1, Y1 )
+cor( X2, Y2 )
+cor (X3, Y3)
+cor (X4, Y4)
+```
+
+Were the correlation coefficients same?
+
+Now try plotting them.
+
+```{r}
+scatterplot()
+```
+
+Therefore, remember to always look at the scatterplot before attaching any interpretation to the data!
+
+If we have to properly define the role of Pearson's coefficient, we can say that it actually measures the strength of the linear relationship between two variables. In other words, it gives a measure of the extent to which the data all tend to fall on a single, perfectly straight line.
+
+##### Spearman's Rank Order Correlation Coefficient
+ 
+But let's take a look at another dataset and find correlation between its variables.
+
+```{r}
+setwd("/Users/lenovo1/Desktop/mtech/courses/stats/Datasets/data/")
+load( "effort.Rdata" )
+effort
+cor( effort$hours, effort$grade )
+```
+
+If you plot this - 
+
+```{r}
+scatterplot(effort$hours, effort$grade, regLine = TRUE, smooth = FALSE)
+```
+
+The correlation _r_ = 0.91 we get above doe snot represent the actual relationship the plot is depicting. What we’re looking for is something that captures the fact that there is a perfect **ordinal relationship** here. That is, if student 1 works more hours than student 2, then we can guarantee that student 1 will get the better grade.
+
+If we’re looking for ordinal relationships, all we have to do is treat the data as if it were ordinal scale! So, instead of measuring effort in terms of “hours worked”, let's rank all 10 of the students in order of hours worked. That is, student 1 did the least work out of anyone (2 hours) so they get the lowest rank (rank = 1). Student 4 was the next laziest, putting in only 6 hours of work in over the whole semester, so they get the next lowest rank (rank = 2).
+
+```{r}
+hours.rank <- rank( effort$hours )   # rank students by hours worked
+grade.rank <- rank( effort$grade )   # rank students by grade received
+
+#Now try cor() function for these
+cor( hours.rank, grade.rank )
+```
+
+Now the correlation coefficient we get is different from the Perason's correlation coefficient _r_ we got earlier. This new correlation coefficient that we got is called '**Spearman's Correlation Coefficient**', denoted by $\rho$.
+
+```{r}
+#Execute this and compare with the correlation coefficient we got above
+cor( effort$hours, effort$grade, method = "spearman")
+```
+
+##### Handling missing values
+
+We've seen in earlier lectures that there could be missing values in data which are represented by `NA` in R. One easy way to remove them is using `na.rm = TRUE` as argument in many functions.
+
+But what if we have missing values in a dataframe where we have to find correlations across variables.
+
+Let's look at such a dataset.
+
+```{r}
+load( "parenthood2.Rdata" )
+print( parenthood2 )
+describe( parenthood2 ) 
+#Check how many missing values are there for each variable - compare the values in 'n' with the number of days.
+```
+
+Now, let's try finding correlations for this dataframe.
+
+```{r}
+cor(parenthood2)
+```
+
+In order top overcome this problem, we can use `use` as an argument in the cor() function. Try out the following.
+
+```{r}
+cor(parenthood2, use = "complete.obs")
+cor(parenthood2, use = "pairwise.complete.obs")
+```
+
+When we choose `use = "complete.obs"`, R will completely ignore all cases (i.e., all rows in our parenthood2 data frame) that have any missing values at all. For eg., if you choose use = "complete.obs" R will ignore that row completely: that is, even when it’s trying to calculate the correlation between dan.sleep and dan.grump, observation 1 will be ignored, because the value of baby.sleep is missing for that observation.
+
+Whereas when we set `use = "pairwise.complete.obs"` R only looks at the variables that it’s trying to correlate when determining what to drop. So, for instance, since the only missing value for observation 1 of parenthood2 is for baby.sleep R will only drop observation 1 when baby.sleep is one of the variables involved: and so R keeps observation 1 when trying to correlate dan.sleep and dan.grump.
+
+The above operation can also be performed by another function called `correlate()` in `lsr` package.
+
+Try it out.
+```{r}
+#Try correlate() for parenthood2 here
+```
+
+That's all folks!
