@@ -1,0 +1,459 @@
+---
+title: "Descriptive Statistics: Plotting"
+output: html_notebook
+---
+
+(_Reference material for the entire notebook: Chapter 2, Whitlock, M. and Schluter D.; Chapter 6, Navarro, D._)
+
+The human eye is a natural pattern detector, adept at spotting trends and exceptions in visual displays. For this reason, biologists spend hours creating and examining visual summaries of their data—graphs and, to a lesser extent, tables. Effective graphs enable visual comparisons of measurements between groups, and they expose relationships between different variables. They are also the principal means of communicating results to a wider audience. 
+
+In this notebook, we will learn how to produce effective graphical displays of data and how to avoid common pitfalls. The choice of a graph will depend on the type of data, numerical or categorical, and whether the goal is to show measurements of one variable or the association between two variables.
+
+#### Why are graphs required?
+
+Graphs are vital tools for analyzing data. They are also used to communicate patterns in data to a wider audience in the form of reports, slide shows, and web content. The two purposes, analysis and presentation, are largely coincident because the most revealing displays will be the best both for identifying patterns in the data and for communicating these patterns to others. Both purposes require displays that are clear, honest, and efficient.
+
+Look at the following graph and think about how good or bad it is and what are the possible faults in the graph.
+
+![Bad Graph](/Users/lenovo1/Desktop/mtech+/courses/stats/Images/fig3.png)
+Did you think about these as well?
+
+- Where are the data? - Difficult to see/add data points
+
+- Patterns in the data are difficult to see.
+
+- Magnitudes are distorted.
+
+- Graphical elements are unclear.
+
+#### How to draw good graphs?
+
+Keeping the above points in mind, these could be 4 rules to practice -
+
+- Show the data.
+
+- Make patterns in the data easy to see. 
+
+- Represent magnitudes honestly. 
+
+- Draw graphical elements clearly.
+
+_Read chapter 2 from Whitlock and Schluter for more details_
+
+##### How does a good graph help?
+
+Showing the data in a proper manner makes it possible to evaluate the shape of the distribution of data points and to compare measurements between groups. It helps you to spot potential problems, such as extreme observations, which will be useful as you decide the next step of your data analysis.
+
+#### Basic Plotting functions in R
+
+Let's try plotting something teh Fibonacci series to take a look how plotting works in R.
+```{r}
+Fibonacci <- c( 1,1,2,3,5,8,13 )
+plot( Fibonacci )
+```
+
+Here we have used the default `plot()` function in R base. Check out more about this function by running the help command `?plot.default`. It's main behavior depends on 2 arguments, x (the first input, which is required) and y (which is optional). There are also some other _graphical paramteres_ which are the characteristics of a plot which are pretty universal: for instance, regardless of what kind of graph you’re drawing, you probably need to specify what colour to use for the plot, right?
+
+Let's try specifying some parameters to customize our plot:
+
+```{r}
+plot( x = Fibonacci,
+main = "You specify title using the ’main’ argument",
+sub = "The subtitle appears here! (Use the ’sub’ argument for this)",
+xlab = "The x-axis label is ’xlab’",
+ylab = "The y-axis label is ’ylab’" )
+```
+
+But what about the fonts? What if we want to change the font of the labels and title?
+
+```{r}
+plot( x = Fibonacci,                     # the data to plot
+main = "The first 7 Fibonacci numbers",  # the title
+xlab = "Position in the sequence",       # x-axis label
+ylab = "The Fibonacci number",           # y-axis label
+font.main = 1,                          # plain text for title
+cex.main = 1,                           # normal size for title
+font.axis = 2,                          # bold text for numbering
+col.lab = "gray50" )                    # grey color for labels
+
+#Try experimenting with the above values
+```
+
+Type `colours()` in the console to see the see a list of over 650 colour names that R know
+_Check out Section 6.2.2 in Learning Statistics with R by D. Navarro for further details._
+
+#### Types of graphs and when to use which one?
+
+_Reference: Chapter 2, Whitlock and Schluter_
+
+##### Plotting single variable: frequency distribution
+
+To examine data for single variable, we show its frequency distribution. The _frequency distribution_ of a variable is the number of occurrences of all values in the data.
+
+```{r}
+#Here's a frequency table for afl.finalists
+table(afl.finalists)
+```
+
+
+Relative frequency is the proportion of observations having a given measurement, calculated as the frequency divided by the total number of observations. The _relative frequency distribution_ describes the fraction of occurrences of each value of a variable.
+
+##### Showing categorical data: bar graph
+
+For a categorical variable, you can first display the the number of occurrences of each category in the data set using a textual display in a _frequency table_. 
+
+- **Def:** Graphically we can represent a _bar graph_ which uses the height of rectangular bars to visualize the frequency (or relative frequency) of occurrence of each category.
+
+```{r}
+#In order to plot the finalists by their frequency, let's find their frequencies
+freq <- tabulate( afl.finalists )
+print( freq )
+#Now we will create some labels for each team:
+teams <- levels( afl.finalists ) #If this is unclear, check the class of afl.finalists; Note that it is a factor variable
+print( teams )
+#Plotting a bar graph
+barplot( height = freq )  # specifying the argument name 
+barplot( freq )   # the lazier version 
+#But wait, where are the team labels we had saved in teams?
+barplot( height = freq, names.arg = teams ) #Adding labels to the bar plot
+```
+```{r}
+#But a lot of our labels are missing in the plot. let's rotate them to fit all of the labels
+barplot( height = freq,      # the frequencies
+         names.arg = teams,  # the labels
+         las = 2)            # rotate the labels
+                    
+```
+
+
+- **Usage:**
+
+    - For making a good bar graph, the top edge of each bar can convey all the information about frequency, but the eye also compares the areas of the bars, which must therefore be of _equal width_. It is crucial that the baseline of the y-axis is at zero—otherwise, the area and height of bars are out of proportion with actual magnitudes and so are misleading.
+
+    - When the categorical variable is _nominal_, the best way to arrange categories is by frequency of occurrence. The most frequent category goes first, the next most frequent category goes second, and so on.
+
+    - For an _ordinal_ categorical variable, the values should be in the natural order (e.g., minimally severe, moderately severe, and very severe). Bars should stand apart, not be fused together. It is a good habit to provide the total number of observations (n) in the figure legend.
+
+- **Formatting:**
+```{r}
+#This function is for globally changing the margins of plots to fit in the axis labels of above plot
+par( mar = c( 10.1, 4.1, 4.1, 2.1) )
+
+#Try some formatting options now
+barplot( height = freq,
+         names.arg = teams,
+         las=2,
+         ylab = "Number of Finals",
+         main = "Finals Played, 1987-2010",  # figure title
+         density = 10,                       # shade the bars
+         angle = 20 )                        # shading lines angle
+
+
+```
+
+
+_Note - A bar graph is usually better than a pie chart, one reason that while it is straightforward to visualize the frequency the first and most frequent category, it is more difficult to compare frequencies in the remaining categories by eye. _
+
+##### Showing numerical data: frequency table and histogram
+
+- **Def**: A histogram uses area of rectangular bars to display frequency. The data values are split into consecutive intervals, or “bins,” usually of equal width, and the frequency of observations falling into each bin is displayed.
+
+```{r}
+#Let's try plotting afl.margins from aflsmall dataset that we've been using previously
+hist(afl.margins)
+```
+
+
+- **Features:** 
+
+    - Any interval of the frequency distribution that is noticeably more frequent than surrounding intervals is called a _peak_. The _mode_ is the interval corresponding to the highest peak. For example, a bell-shaped frequency distribution has a single peak (the mode) in the center of the range of observations. A frequency distribution having two distinct peaks is said to be _bimodal_.
+  
+    - We have already discussed about _Skewness_ of a histogram in Descriptive Statistics Notebook 1, which describes the symmetry of a histogram.
+    
+    _Is this bimodal or modal data? Where is the peak?_
+    
+```{r}
+#Now, let's try changing the interval width
+hist( x = afl.margins, breaks = 3 )     
+hist( x = afl.margins, breaks = 0:116 )  
+#You can also give a vector with specific positions where you want the breaks as an argument
+```
+
+- **Usage:**
+
+    - To choose the ideal interval width we must decide whether the two distinct body-size groups are likely to be “real,” in which case the histogram should show both, or whether a bimodal shape is an artifact produced by too few observations. (Eg. The histogram with 116 intervals seems to have multiple peaks, are those all useful?)
+
+    - Unlike bar graphs, adjacent histogram bars are contiguous, with no spaces between them. This reinforces the perception of a numerical scale, with bars grading from one into the next.
+
+    - To select the number of intervals, some computer programs use Sturges’s rule of thumb, in which the number of intervals is 1 + ln(n)/ln(2), where n is the number of observations and ln is the natural logarithm. The resulting number is then rounded up to the higher integer. 
+    
+```{r}
+#Try finding the ideal number of intervals for afl.margins using Sturges' rule of thumb 
+#You can use log() function to find the natural log of a number
+
+```
+
+    - The downside to histograms is that they aren’t very compact and occupy a lot of space.
+
+- **Formatting:**
+
+```{r}
+hist( x = afl.margins,
+      main = "2010 AFL margins", # title of the plot
+      xlab = "Margin",           # set the x-axis label 
+      density = 10,              # draw shading lines: 10 per inch
+      angle = 40,                # set the angle of the shading lines is 40 degrees
+      border = "gray20",        # set the colour of the borders of the bars
+      col = "gray80",           # set the colour of the shading lines
+      labels = TRUE,            # add frequency labels to each bar
+      ylim = c(0,40) )          # change the scale of the y-axis
+```
+
+
+
+##### Showing association between two variables
+
+The goal is to create an image that visualizes association or correlation between two variables and differences between groups. The most suitable type of graph depends on whether both variables are categorical, both are numerical, or one is of each data type.
+
+**Association between Categorical variables**
+
+If two categorical variables are associated, the relative frequencies for one variable will differ among categories of the other variable. To reveal such association, show the frequencies using a contingency table, a mosaic plot, or a grouped bar graph. 
+
+_A contingency table_ gives the frequency of occurrence of all combinations of two (or more) categorical variables.
+
+```{r}
+#Let's try it out!
+df = data.frame(
+  "Name" = c("Amiya", "Rosy", "Ashish"),
+  "Gender" = c("Male", "Female", "Male") )
+ 
+# Creating contingency table from data using table()
+conTable = table(df)
+print(conTable)
+```
+
+
+The _grouped bar graph_ uses heights of rectangles to graph the frequency of occurrence of all combinations of two (or more) categorical variables. Grouped bar graphs are like bar graphs for single variables, except that different categories of the response variable are indicated by different colors or shades. Bars are grouped by the categories of the explanatory variable treatment (control and experiment), so make sure that the spaces between bars from different groups are wider than the spaces between bars separating categories of the response variable. 
+
+```{r}
+#We've already seen how to make a bar graph. 
+
+#Let's create a fictitious dataset with Number of insects in different locations
+
+set.seed(112)
+data <- matrix(sample(1:100,15) , nrow=3)                       #Creating a matrix by sampling 15 numbers from 1 to 30 randomly
+
+colnames(data) <- c("OAT","Hostel","BSBE","Park 67","P.E. Ground")  #Change column names in the dataframe
+rownames(data) <- c("Mosquito","Grasshopper","Ladybird")            #Change row names in the dataframe
+ 
+# Grouped barplot
+barplot(data, 
+        col=colors()[c(23,89,12)] ,                                 #Numbers for colors in a vector
+        border="white",                                             #Set border color
+        font.axis=2,                                                #font for axis annotation
+        beside=T,                                                   #beside=TRUE for grouped bars, and FALSE for stacked bars
+        legend=rownames(data),                                      #set legend
+        xlab="group",                                               #x-axis label
+        font.lab=2)                                                 #font size for x and y labels
+```
+
+
+In a _mosaic plot_, is a square subdivided into rectangular tiles the area of which represents the conditional relative frequency for a cell in the contingency table i.e. the bar area and height indicate the relative frequencies (i.e., the proportion) of the responses. 
+
+- This makes it easy to see the association between treatment and response variables: if an association is present in the data, then the vertical position at which the colors meet will differ between stacks. 
+- If no association is present, then the meeting point between the colors will be at the same vertical position between stacks. - Another feature of the mosaic plot is that the width of each vertical stack is proportional to the number of observations in that group.
+
+```{r}
+#Let's try to plot our above insect data using a mosaic plot
+mosaicplot(data)
+
+#Some formatting:
+mosaicplot(data, main = "Insects in IITK",
+           xlab = "Insects",
+           ylab = "Locations at IITK",
+           las = 1,
+           border = "chocolate",
+           shade = TRUE)
+```
+Each tile is colored to show the deviation from the expected frequency (residual) from a Pearson X² or Likelihood Ratio G² test. (Further details in later modules)
+More about mosaic plots [here](https://www.tutorialgateway.org/mosaic-plot-in-r/)
+
+Read _Chapter 2, Whitlock and Schluter_ to understand which display to choose when.
+
+**Association between numerical variables: Scatter Plot**
+
+We've encountered scatter plots before to understand Correlations. In scatter plots, the data on the x-axis indicates the measurement of the explanatory variable while the data on the y-axis indicates the measurement of the response variable.
+Each observation in the data is represented as a point.
+
+```{r}
+#For this let's go back to our parenthood dataset and try out the scatter plots again
+plot( x = parenthood$dan.sleep, # data on the x-axis 
+      y = parenthood$dan.grump) # data on the y-axis
+```
+```{r}
+#Let's try some customizations
+plot( x = parenthood$dan.sleep,        # data on the x-axis
+      y = parenthood$dan.grump,        # data on the y-axis
+      xlab = "Sleep (hours)",          # x-axis label
+      ylab = "Grumpiness (0-100)",     # y-axis label
+      xlim = c(0,12),                  # scale the x-axis
+      ylim = c(0,100),                 # scale the y-axis
+      pch = 20,                        # change the plot type
+      col = "gray50",                  # dim the dots slightly
+      frame.plot = FALSE )             # don’t draw a box
+```
+```{r}
+#We've also seen the scatterplot() function. Let's use that to plot multiple scatter plots together.
+
+cor( x = parenthood )    #Calculating the correlation matrix
+pairs( x = parenthood )  #Scatterplots between all variables of parenthood
+```
+
+
+
+**Association between numerical and a categorical variable**
+
+We can use strip chart (dot plot), box plot or multiple histograms for this representation.
+
+_Dot plot:_ Each observation is represented as a dot on a graph showing its numerical measurement on one axis (Eg. y-axis) and the category (group) to which it belongs on the other (Eg. x-axis). 
+
+More about [dotplots](https://www.tutorialgateway.org/r-ggplot2-dot-plot/)
+
+_Box plot:_ A box plot is a graph that uses lines and a rectangular box to display the median, quartiles, range, and extreme measurements of the data. The line inside each box is the median, the middle measurement of the group of observations. The lower and upper edge of each box are first and third quartiles. Two lines, called whiskers, extend outward from a box at each end. The whiskers stop at the smallest and largest “non-extreme” values in the data. Extreme values are plotted as isolated dots past the ends of the whiskers. By default, this value is 1.5 times the interquartile range, corresponding to a "range" value of 1.5. Any observation whose value falls outside this range is plotted as a circle instead of being covered by the whiskers, and is commonly referred to as an outlier.
+
+Most suited for interval or ratio scale data.
+
+```{r}
+#Let's represent the following information graphically using a box plot
+summary(afl.margins)
+```
+
+
+```{r}
+boxplot( x = afl.margins )
+#Try changing the range to 100 [boxplot( x = afl.margins, range = 100 )]
+```
+
+    Formatting:
+
+```{r}
+#Let's cutomize our box plot. Try experimenting with different values
+boxplot( x = afl.margins,           # the data
+         xlab = "AFL games, 2010",  # x-axis label
+         ylab = "Winning Margin",   # y-axis label
+         border = "grey50",         # dim the border of the box
+         frame.plot = FALSE,       # don’t draw a frame
+         staplewex = 0,            # don’t draw staples (the crosslines at the ends of whiskers)
+         whisklty = 1 )            # solid line for whisker
+```
+
+    Identifying outliers with boxplots
+
+Box plots give an approximate idea about the outliers and we can then use the which function to find out the index of our outlier.
+
+```{r}
+which( afl.margins > 300 )
+#Also try plotting a box plot using Boxplot() instead of boxplot() and note if there is any difference
+```
+
+    Plotting multiple box plots
+
+```{r}
+#Let's load the aflsmall2 dataset for trying out multiple box plots
+afl2 <- load( "aflsmall2.Rdata" )
+who( TRUE )
+head(afl2)
+```
+```{r}
+#Now let's plot box plots for the afl.margins for every year
+boxplot( formula = margin ~ year, + data = afl2)
+```
+```{r}
+#Now a bit of formatting. Do try out other formatting options from the book and try experimenting with values here.
+boxplot( formula =  margin ~ year,   # the formula
+         data = afl2,                # the data set
+         xlab = "AFL season",        # x axis label
+         ylab = "Winning Margin",    # y axis label
+         frame.plot = FALSE,         # don’t draw a frame
+         staplewex = 0,              # don’t draw staples
+         staplecol = "white",        # (fixes a tiny display issue)
+         boxwex = .75,               # narrow the boxes slightly
+         boxfill = "grey80",         # lightly shade the boxes
+         whisklty = 1,               # solid line for whiskers
+         whiskcol = "grey70",        # dim the whiskers
+         boxcol = "grey70",          # dim the box borders
+         outcol = "grey70",          # dim the outliers
+         outpch = 20,                # outliers as solid dots
+         outcex = .5,                # shrink the outliers
+         medlty = "blank",           # no line for the medians
+         medpch = 20,                # instead, draw solid dots
+         medlwd = 1.5 )              # make them larger
+```
+
+_Multiple histograms:_ As simple as plotting histograms for each categorical variable.
+
+When to use which?
+
+- The strip chart shows all the data points, which is ideal when there are only a few observations in each category. 
+
+- The box plot picks out a few of the most important features of the frequency distribution and is more suitable when the number of observations is large. 
+
+- The multiple histogram plot shows more features of the frequency distribution but takes up more space than the other two options. It works best when there are only a few categories.
+
+##### Showing trends in time and space
+
+*Line graph*
+
+A line graph uses dots connected by line segments to display trends in a measurement over time or other ordered series.
+
+The steepness of the line segments reflects the speed of change in the number of cases from one quarter-year to the next.
+
+```{r}
+#Line graph is similar to scatter plot. Let's use the 'work' dataset for plotting
+
+df <-  aggregate(x = work$pay , by = list(work$weekday), FUN = mean)                #Finding the Mean pay on different days
+colnames(df) <- c("Days","Pay")                                                     #Adding column names
+df$Pay = round(df$Pay)                                                              #Rounding off the pay
+sorted_df <- df[order(df$Pay),]                                                     #Sort pay in ascending order
+sorted_df                                                                           #New DF with sorted values
+plot( sorted_df$Pay, 
+      type = "l",                                                                   #Specify Line plot by type "l"
+      xaxt = "n",                                                                   #Suppress default x axis
+      xlab = "Days",                                                                #Label for x axis
+      ylab = "Average pay")                                                         #Label for y axis
+#Setting the x axis manually
+axis(side = 1,                                                                      #1 stands for axis on bottom
+     at = 1:7,                                                                      #Tick marks at which points
+     labels = sorted_df$Days)                                                       #Labels of tick marks
+```
+
+
+*Maps*
+
+A map is the spatial equivalent of the line graph, using a color gradient to display a numerical response variable at multiple locations on a surface. The explanatory variable is location in space. One measurement is displayed for each point or interval of the surface.
+
+A visual representation of an MRI scan is also a map.
+
+Know more about maps [here](https://r-spatial.org/r/2018/10/25/ggplot2-sf.html)
+
+##### Saving images
+
+The easiest way to save your image is to click on the “Export” button in the Plot panel (i.e., the area in Rstudio where all the plots have been appearing). When you do that you’ll see a menu that contains the options “Save Plot as PDF” and “Save Plot as Image”.
+
+```{r}
+#Let's save our line plot
+jpeg('/Users/lenovo1/Desktop/stats/myplot.jpg')
+plot( sorted_df$Pay, 
+      type = "l",                                                                   
+      xaxt = "n",                                                                   
+      xlab = "Days",                                                               
+      ylab = "Average pay")   
+axis(side = 1,                                                                      
+     at = 1:7,                                                                      
+     labels = sorted_df$Days,
+     las = 2)  
+
+dev.off()
+```
+
+The end.
