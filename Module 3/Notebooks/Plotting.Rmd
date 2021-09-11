@@ -15,7 +15,7 @@ Graphs are vital tools for analyzing data. They are also used to communicate pat
 
 Look at the following graph and think about how good or bad it is and what are the possible faults in the graph.
 
-![Bad Graph](/Users/lenovo1/Desktop/mtech+/courses/stats/Images/fig3.png)
+![Bad Graph](fig3.png)
 Did you think about these as well?
 
 - Where are the data? - Difficult to see/add data points
@@ -442,7 +442,7 @@ The easiest way to save your image is to click on the “Export” button in the
 
 ```{r}
 #Let's save our line plot
-jpeg('/Users/lenovo1/Desktop/stats/myplot.jpg')
+jpeg('myplot.jpg') #If you want to save it somewhere other than the working directory then enter full path with file name
 plot( sorted_df$Pay, 
       type = "l",                                                                   
       xaxt = "n",                                                                   
