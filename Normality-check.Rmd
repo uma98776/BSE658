@@ -1,0 +1,86 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## This notebook is to explain about the normality test in statistics
+
+### Whenever we perform the z-test and t-test on the given data, we follow the underlying assumption that the data is normally distributed. However, in real scenarios sometimes its not. A normality test therefore ensures that whether the data can be approximated as normal or it is far away from the assumption. Here, for the normality check we will be talking about the **Q-Q plots** and the **Shapiro-wilk normality test**
+
+```{r}
+normal.data <- rnorm(100)
+hist(normal.data)
+```
+#### A Q-Q plot is a scatterplot created by plotting two sets of quantiles against one another. If both sets of quantiles came from the same distribution, we should see the points forming a line that’s roughly straight. Visit [QQ plot](https://data.library.virginia.edu/understanding-q-q-plots/) for understaning quantiles and Q-Q plots.
+```{r}
+qqnorm( y = normal.data )
+```
+#### The Shapiro-wilk test calculates the similarity percentage for how similar is the given data to a normal distribution. Visit [Shapiro test](https://www.spss-tutorials.com/spss-shapiro-wilk-test-for-normality/) to understand more. The null hypothesis for the test is "the data is normally distributed", hence p value less that 0.05 implies rejecting the null hypotheis and failing the normality criteria.
+
+```{r}
+shapiro.test( x = normal.data )
+```
+#### Let's check the normality of the exponentially distributed data
+```{r}
+exp.data <- rexp(1000, 0.01)
+hist(exp.data)
+```
+```{r}
+qqnorm(exp.data)
+```
+
+```{r}
+shapiro.test( x = exp.data )
+```
+#### We see that for the normally distributed data, the Q-Q plot shows roughly a straight line, while for the exponentially distributed data the Q-Q plot curves upwards.
+#### The shapiro-wilk test provides the value of p = 0.968 for the normally distributed data, approving the null hypotheis to be true, while for the exponentially distributed data p is almost zero (p<<0.5), rejecting the null hypotheis and hence the normality criteria. 
+
+### Checking the normality of data used in z-test and t-test
+#### So far when we conducted z-test and t-tests we were following the underlying assumptions that the data is normally distributed. The normality check is therefore required to ensure whether the data is normally distributed or not.
+#### Here, we will use *QQ-plots* as well as *shapiro-wilk normality test* to check whether the data we used for z-test and t-test was normal or not.
+
+```{r}
+library(tidyverse)
+library(tibble)
+library(dplyr)
+```
+```{r}
+data <- read_csv('./Diet_R.csv')
+data <- mutate(data, weightdiff = pre.weight-weight6weeks)
+diet3 <- filter(data,Diet == 3)
+wdiet3 <- diet3$weightdiff
+```
+#### Normality check on the population data
+```{r}
+qqnorm(data$weightdiff)
+```
+```{r}
+shapiro.test( x = data$weightdiff )
+```
+#### From the Q-Q plot being almost a strain line and shapiro-wilk test having p>> 0.5, we assure that the population data is normally distributed. Now lets check for the weightloss data for the sample (the people following diet 3) 
+```{r}
+qqnorm(wdiet3)
+```
+```{r}
+shapiro.test(x = wdiet3)
+```
+#### We see that for the sample which consists of people following the diet3, the weighloss data is normally distributed, however not upto the same extent as of the population but it is fairly reasonable to assume that the data is normally distributed and hence it qualifies to use z-tests and t-tests for the same.***You may check the normality for the other z-tests and t-tests performed in the last two notebooks***.
+
+## Wilcoxon test 
+#### We know that t-tests assumes that the data is normal, but what if the data is non-normal. Wilcoxon test is an equivalent non-parametric test used when the data turns out to be non-normal. Please check [Wilcoxon singned rank test](https://sphweb.bumc.bu.edu/otlt/mph-modules/bs/bs704_nonparametric/BS704_Nonparametric6.html). Here, we are performing wilcox test as a proxy for paired t-test from the last notebook
+```{r}
+load( "./chico.Rdata" )
+chico$improvement <- chico$grade_test2 - chico$grade_test1 
+```
+
+```{r}
+wilcox.test( x = chico$grade_test1, y = chico$grade_test2 )
+```
+#### One-sample wilcox test is a non-parametric alternative to the one sample t-test when data is non-normal. Here, we are using it to check the null hypothesis "diet1 has no effect".
+```{r}
+wdiet1 <- filter(data,Diet == 1)
+wilcox.test( x = wdiet1$weightdiff,
+              mu = 0
+)
+```
+

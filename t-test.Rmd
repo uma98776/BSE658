@@ -1,0 +1,89 @@
+---
+title: "t-test"
+output: html_notebook
+---
+
+#### This tutorial is to explain t-test and how to perform it using a library in R. 
+
+##### we will be using the same diet dataset as used for the z-test, Let's first set up the tidyverse package to work with dataframes
+```{r echo=TRUE}
+library(tidyverse)
+library(tibble)
+library(dplyr)
+```
+
+Load the data file as tibble and defining the weightloss feature
+```{r}
+data <- read_csv('./Diet_R.csv')
+newdata <- mutate(data, weightdiff = pre.weight-weight6weeks)
+newdata
+```
+![](./t_test.png) 
+
+#### Graphical illustration of the null and alternative hypotheses assumed by the (two sided) one sample t-test.
+Unlike z-test, for t-test we assume that the population standard deviation is not known in advance.
+For our t-test, we will use the population mean for weightloss, and will estimate the standard error of mean using the standard deviation of the sample.
+```{r}
+true_mean <- mean(newdata$weightdiff)
+print(true_mean)
+```
+
+We will be using the same hypothesis which we used for z-test
+Defining the sample and its mean and sd
+```{r}
+mydiet <- filter(newdata,Diet == 3)
+sample <- mydiet$weightdiff
+```
+
+We will be using a R library "lsr" to perform t-test 
+```{r}
+install.packages("lsr")
+```
+
+```{r}
+library(lsr)
+oneSampleTTest( x=sample, true_mean )
+
+```
+Looking at the p value we can reject the null hypothesis with 99% confidence interval.
+What can we infer here is, the group with diet 3 has a significantly higher weight loss than the average weight loss of 3.8 (t(26) = 2.827, p <.01). The 95% confidence interval is [4.2, 6.096] that is to say 95% of the times people taking diet 3 will have weight loss in the range of 4.2 to 6.096. 
+
+### Comparing two means (two sampled t-test)
+Now, lets perform the two sampled t-test with the same hypothesis as used for z-test
+```{r}
+sample2 <- select(newdata, Diet,weightdiff) 
+sample2 <- filter(sample2, Diet==1 | Diet==2)
+sample2 <- as.data.frame(sample2) #the lsr function for independent t-test takes dataframes
+sample2
+```
+```{r}
+independentSamplesTTest( 
+      formula = weightdiff ~ Diet,  # formula specifying outcome and group variables
+      data = sample2,               # data frame that contains the variables
+      var.equal = TRUE              # assume that the two groups have the same variance
+  )
+```
+Looking at the p value the null hypothesis holds with 68% probability.
+What can we infer here is, the group with diet 1 and diet two has a similar weight loss (t(26) = 0.4, p = 0.68). 
+
+### Paired t-test
+paired t-test is used for comparing means of variable measured at two different scenarios for the same subject (when we are interested in the within subject variability and not the with subject differences). Here, we will be using an example data which contains the marks scored by students in two diffrenet tests
+
+```{r}
+load( "./chico.Rdata" )
+head(chico)
+```
+
+#### Defining our hypothesis - 
+The null hypothesis for paired t-test assumes that the difference of the means is zero. We can define it as: "The students scored similar in test1 and test2". 
+At the implementation level paired t-test is just a one sample t-test conducted with a difference of a variable measured at two different scenarios. We can define our variable by taking difference of grades in test1 and test2. 
+```{r}
+chico$improvement <- chico$grade_test2 - chico$grade_test1 
+head(chico)
+```
+```{r}
+oneSampleTTest( chico$improvement, mu=0 )
+```
+
+#### So clearly the result states that alternative hypothesis is true, i.e. there is significant improvement in test2  grades as compared to test 1 (paired t-test: t=6.475, N=20, p<0.001)
+
