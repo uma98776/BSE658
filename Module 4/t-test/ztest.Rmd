@@ -1,0 +1,114 @@
+---
+title: "z-test in Statistics"
+output: html_notebook
+---
+
+### For this tutorial we will be using a diet dataset, which contains information on 78 people using one of three weight loss diets for a period of 6 weeks. The data contains information about Age, gender, Height, diet followed and weight before and after the diet period.
+
+##### Lets first set up the tidyverse package to work with dataframes
+```{r include=FALSE}
+install.packages("tidyverse")
+```
+```{r}
+library(tidyverse)
+library(tibble)
+library(dplyr)
+```
+
+Load the data file as tibble
+```{r}
+data <- read_csv('./Diet_R.csv')
+data
+```
+A simple way to analyse the effect of different diet plans is to check reduction in weight after 6 weeks. Let us first define a feature for weight difference. We will be using mutate function from dplyr to define a new column 'weightdiff'.
+
+```{r}
+newdata <- mutate(data, weightdiff = pre.weight-weight6weeks)
+newdata
+```
+
+Let's explore the weightdiff, computing the population mean and Sd
+```{r}
+true_mean <- mean(newdata$weightdiff)
+true_sd <- sd(newdata$weightdiff)
+print(true_mean)
+print(true_sd)
+```
+### Defining the hypothesis for z-test
+There can be several hypothesis here, but we need to first define our own hypothesis about what we want to look at. Here, assume somehow the experimenter tells his prediction that diet 3 is going to work best. And you say that I don't think so! But let's see what the statistics tells.
+
+##### In this case, our null hypothesis can therefore be: *"The group which followed Diet 3 has a similar weight loss as of the entire population"* 
+
+Defining the Sample 
+```{r}
+mydiet <- filter(newdata,Diet == 3)
+mydiet
+```
+Computing Sample mean and Sd
+```{r}
+sample_mean <- mean(mydiet$weightdiff)
+sample_sd <- sd(mydiet$weightdiff)
+print(sample_mean)
+print(sample_sd)
+```
+```{r}
+sample_size <- length (mydiet$Person)
+sample_size
+```
+```{r}
+true_sem <- true_sd / sqrt(sample_size)
+print(true_sem)
+```
+
+```{r}
+z_score <- (sample_mean - true_mean) / true_sem
+print( z_score )
+
+```
+```{r}
+upper_area <- pnorm( q = z_score, lower.tail = FALSE )
+lower_area <- pnorm( q = -z_score, lower.tail = TRUE )
+p_value <- upper_area + lower_area
+print( p_value )
+```
+From the obtained p_value ~ 0.008, means that only 0.8 percent of the times the null hypothesis will hold true. Hence, we can reject null hypothesis with z=2.65, N=27, p<0.008  
+
+### Comparing two means
+Now, if we want to compare two different diets (let's say diet 1 and diet 2) in their effectiveness we can define a two sample z test. Our null hypothesis could be: "group with diet 2 has similar effect as of group with diet 1". 
+
+Let's define both the sample groups and their size, mean and sd
+
+```{r}
+sample1 <- filter(newdata,Diet == 1)
+sample2 <- filter(newdata,Diet == 2)
+N1 <- length(sample1$Person)
+N2 <- length(sample2$Person)
+sample1.mean <- mean(sample1$weightdiff)
+sample1.sd <- sd(sample1$weightdiff)
+sample2.mean <- mean(sample2$weightdiff)
+sample2.sd <- sd(sample2$weightdiff)
+print(sample1.mean)
+print(sample2.mean)
+```
+Let's determine the z-score now
+```{r}
+se = sqrt((sample1.sd^2)/N1 + (sample2.sd^2)/N2)
+z2= (sample1.mean - sample2.mean)/se
+print(z2)
+```
+```{r}
+upper <- pnorm( q = z2, lower.tail = FALSE )
+lower <- pnorm( q = -z2, lower.tail = TRUE )
+p_val <- upper + lower
+print(p_val)
+```
+As we can see our z score is 0.4 which is much less than 1 and the corresponding p-value says that if we make a statement that diet 2 has a similar effect as of diet 1, we would be right 68% of the times. So, our null hypothesis holds and we can make an inference that diet 2 has similar effect as of diet 1.
+
+### One tailed z-test
+So far we were doing a two tailed z test, where we were considering both of the probabilities (For values greater than and smaller than the mean of the population) but now lets say we want to test out whether diet 1 is better than diet 2 which means, for that we only care about the values which would be greater than the population mean. So we will only consider the upper area.
+```{r}
+p_new <- pnorm( q = z2, lower.tail = FALSE )
+print(p_new)
+```
+With p value = 0.34 we can infer that 34% of the times diet 1 would be better than diet 2.
+
