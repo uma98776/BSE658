@@ -84,6 +84,12 @@ Probability distribution is simply the probabilities of these different events a
 ```{r}
 #Try plotting a bar graph of all the probabilities above
 ```
+Let's think about what happens in case of non-elementary events. E.g. An event E where either “blue jeans” or “black jeans” or “grey jeans" has occurred. 
+Then what will be the probability of event E.
+
+P(E) = P(X1) + P(X2) + P(X3)
+
+If any of these elementary events occurs, then E is also said to have occurred. Similarly, there are other rules satisfying probabilities:
 
 
 Now let's take a look at some distributions.
