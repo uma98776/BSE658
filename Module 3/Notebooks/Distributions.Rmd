@@ -1,0 +1,164 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+##### A short note on Models
+
+A model is a simplified representation of a system. For example, the map of a city represents a city in a simplified fashion. A map providing as much detail as the original city would not only be impossible to construct, it would also be pointless. Humans build models, such as maps and statistical models, to make their lives simpler. [Chapter 3, Winter B.]
+
+
+
+
+Now let's take a look at some distributions.
+
+##### Generating Different types of distributions
+
+**Normal Distribution**
+
+One of the most common distributions in statistics is the ‘normal distribution’ aka Gaussian Distribution, well known as the ‘bell curve’ due to its characteristic bell shape.
+
+Let's generate a Normal distribution: 
+
+```{r}
+# Here we are generating a normal distribution having 100 data points selected randomly. Try varying this number from 10 to 1000 and check the distribution plot.
+x <- rnorm(100)
+hist(x, col = 'steelblue')
+abline(v = mean(x), lty = 2, lwd = 2)
+```
+How to generate a binomial distribution:
+Here we have generated a 
+```{r}
+z<-rbinom( n = 100, size = 20, prob = 1/6 )
+
+hist(z, col = 'steelblue')
+```
+Poisson Distribution
+```{r}
+y <- rpois(100, lambda = 1.2)
+hist(y, col = 'steelblue')
+abline(v = mean(y), lty = 2, lwd = 2)
+```
+Gamma Distribution
+```{r}
+x_dgamma <- seq(0, 2, by = 0.04)
+y_dgamma <- dgamma(x_dgamma, shape = 6)
+plot(y_dgamma)
+```
+mean as model
+```{r}
+z <- rnorm(50, mean = 5, sd = 2)
+mean(z)
+sd(z)
+quantile(z)
+quantile(z, 0.16)
+mean(x) - sd(x)
+mean(x) + sd(x)
+```
+Checking Normality of a distribution
+
+```{r}
+CompanyABCProfit<-read.csv("CompanyABCProfit.csv")
+attach(CompanyABCProfit)
+install.packages("dplyr")
+install.packages("ggpubr")
+library("ggpubr")
+ggdensity(Profit,main="Profit per year", xlab="YEARLY PROFIT IN INR" )
+ggqqplot(Profit)
+ggplot(CompanyABCProfit) +     geom_point(mapping = aes(x = Year, y = Profit))
+shapiro.test(Profit)
+```
+
+Generating a distribution and checking normality of the distribution
+```{r}
+N<- rnorm(100, mean=2, sd= 1.3 )
+P <- rpois(100, lambda = 1.2)
+#generate distribution z= p*N + (1-p)P
+Y = 0.1*N
+z= Y+P
+#test Normality
+shapiro.test(z) 
+plot(z)
+ggdensity(z)
+ggqqplot(z)
+```
+
+```{r}
+u=runif(40, min = -1, max = 1)
+N<- rnorm(100, mean=2, sd= 1.3 )
+#generate distribution z= p*N + (1-p)u where 0<p<1
+s = 0.1*N
+j=0.9*u
+q= s+j
+#test Normality
+shapiro.test(q) 
+plot(q)
+ggdensity(q)
+ggqqplot(q)
+boxplot(q)
+```
+Emotional Valence Data
+```{r}
+# Load tidyverse and Warriner et al. (2013) data:
+
+library(tidyverse)
+
+war <- read_csv('warriner_2013_emotional_valence.csv')
+
+# Check:
+
+war
+
+# Check valence measure range:
+
+range(war$Val)
+
+# Check the least and most positive wors:
+
+filter(war, Val == min(Val) | Val == max(Val))
+
+# Same thing, but more compact:
+
+filter(war, Val %in% range(Val))
+
+# Check tibble in ascending order:
+
+arrange(war, Val)
+
+# And descending order:
+
+arrange(war, desc(Val))
+
+#Mean and SD:
+
+mean(war$Val)
+sd(war$Val)
+
+# 68% rule:
+
+mean(war$Val) + sd(war$Val)
+mean(war$Val) - sd(war$Val)
+
+# Confirm:
+
+quantile(war$Val, c(0.16, 0.84))
+
+# Median:
+
+median(war$Val)
+
+# Which is the same as the 50th percentile:
+
+quantile(war$Val, 0.5)
+```
+
+```{r}
+ggdensity(war$Val)
+boxplot(war$Val)
+```
+1. Generate an alpha distribution.
+2. Generate a normal distribution with 150 data points and mean=2, standard deviation= 1.5 and a uniform distribution of maximum value 1, minimum value -1. Generate a distribution combining both using the equation, X= p*N + (p-1)u, where N= normal distribution, u= uniform distribution. X is generated new distribution. Vary the value of p= 1,2,3.. and check normality of distribution X. 
+3. Load the emotional valence dataset from warrinar et al. 2013 check mean valence, plot boxplot with indication of first and third quantile value int it. Check normality of the data. 
+
+
