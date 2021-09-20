@@ -1,16 +1,26 @@
 ---
-title: "R Notebook"
+title: "Inferential Statistics: Probability & Distributions"
 output: html_notebook
 ---
 
+So far we have discussed about descriptive statistics - summarizing data and plotting it. But in order gain the power of making inferences, we will be strating with inferential statistics.
 
-##### A short note on Models
+#### Pre-requisite: Probability
 
-A model is a simplified representation of a system. For example, the map of a city represents a city in a simplified fashion. A map providing as much detail as the original city would not only be impossible to construct, it would also be pointless. Humans build models, such as maps and statistical models, to make their lives simpler. [Chapter 3, Winter B.]
+##### Difference between probability and statistics**
+Probability theory is a branch of mathematics that tells you how often different kinds of events will happen. For eg. What are the chances of a fair coin coming up heads 10 times in a row? or What are the chances that I’ll win the lottery?
 
+In each case the “truth of the world” is known. We know that the coin is fair, so there’s a 50% chance that any individual coin flip will come up heads. We know that the lottery follows specific rules. The critical point is that probabilistic questions start with a known model of the world, and we use that model to do some calculations. *[Chapter 9, Navarro D.]*
 
+- - - -
+**A short note on Models**
 
+A model is a simplified representation of a system. For example, the map of a city represents a city in a simplified fashion. A map providing as much detail as the original city would not only be impossible to construct, it would also be pointless. Humans build models, such as maps and statistical models, to make their lives simpler. *[Chapter 3, Winter B.]*
+- - - -
 
+But even though we know the models like 'P(heads) = 0.5', we do not know the data (Whetehr heads will come 10 times or 3 times). However, for statistics, it is the opposite. We have the data and we want to infer the truth about the world. For eg., If my friend flips a coin 10 times and gets 10 heads, are they playing a trick on me? or If the lottery commissioner’s spouse wins the lottery, how likely is it that the lottery was rigged?
+
+We want to figure out which is the true model of the world. Is it *P(heads) = 0.5* or is it *P(heads) $\ne$ 0.5*?
 Now let's take a look at some distributions.
 
 ##### Generating Different types of distributions
