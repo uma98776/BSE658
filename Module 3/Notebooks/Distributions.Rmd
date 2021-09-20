@@ -18,7 +18,7 @@ In each case the “truth of the world” is known. We know that the coin is fai
 A model is a simplified representation of a system. For example, the map of a city represents a city in a simplified fashion. A map providing as much detail as the original city would not only be impossible to construct, it would also be pointless. Humans build models, such as maps and statistical models, to make their lives simpler. *[Chapter 3, Winter B.]*
 - - - -
 
-But even though we know the models like 'P(heads) = 0.5', we do not know the data (Whetehr heads will come 10 times or 3 times). However, for statistics, it is the opposite. We have the data and we want to infer the truth about the world. For eg., If my friend flips a coin 10 times and gets 10 heads, are they playing a trick on me? or If the lottery commissioner’s spouse wins the lottery, how likely is it that the lottery was rigged?
+But even though we know the models like `P(heads) = 0.5`, we do not know the data (Whetehr heads will come 10 times or 3 times). However, for statistics, it is the opposite. We have the data and we want to infer the truth about the world. For eg., If my friend flips a coin 10 times and gets 10 heads, are they playing a trick on me? or If the lottery commissioner’s spouse wins the lottery, how likely is it that the lottery was rigged?
 
 We want to figure out which is the true model of the world. Is it *P(heads) = 0.5* or is it *P(heads) $\ne$ 0.5*?
 
@@ -30,13 +30,61 @@ We want to figure out which is the true model of the world. Is it *P(heads) = 0.
 
 According to the frequentist view, flip a fair coin over and over again, and as N grows large (approaches infinity, denoted N Ñ 8), the proportion of heads will converge to 50%.
 
- *Some desirable characteristics*
+ *Advantages*
  -  It is objective: the probability of an event is necessarily grounded in the world.
  -  It is unambiguous: any two people watching the same sequence of events unfold, trying to calculate the probability of an event, must inevitably come up with the same answer.
 
 But it all depends on infinite flips of coin. Do infinities really exist in the physical universe? What about the probability for a single non-repeatable event like the chances of rain on 21 September 2021?
 
 **The Bayesian view**
+
+Bayesian view is subjectivist view. The most common way of thinking about subjective probability is to define the probability of an event as the degree of belief that an intelligent and rational agent assigns to that truth of that event. But how to operationalize this 'degree of belief'? 
+
+One way is to use 'rational gambling'. So a “subjective probability” will be operationalized in terms of what bets you're willing to accept.
+
+ *Advantage*
+ - You don’t need to be limited to those events that are repeatable.
+ 
+ *Disadvantage*
+ - Can’t be purely objective – specifying a probability requires us to specify an entity that has the relevant degree of belief. This entity might be a human, an alien, a robot, or even a statistician, but there has to be an **intelligent agent** out there that believes in things. 
+
+
+In short, frequentist view is sometimes considered to be too narrow (forbids lots of things that that we want to assign probabilities to) while the Bayesian view is sometimes thought to be too broad (allows too many differences between observers).
+
+##### Definitions
+
+Refer to the example described in *Section 9.3.1, Navarro D.* for the following content.
+
+**Elementary event:** Every time we make an observation (e.g., every time I put on a pair of pants), then the outcome will be one and only one of these events.
+
+**Sample space:** The set of all possible events (e.g., the wardrobe)
+
+**Probability:** Numbers between 0 and 1.
+
+For an event X, the probability of that event P(X) is a number that lies between 0 and 1. The bigger the value of P(X), the more likely the event is to occur.
+
+If P(X) = 0, it means the event X is impossible (i.e., I never wear those pants). On the other hand, if P(X)= 1 it means that event X is certain to occur (i.e., I always wear those pants).
+
+**Law of total probability:** The probabilities of the elementary events need to add up to 1
+
+#### Distributions
+
+Let's take a look at this and see what is a distribution. 
+
+```{r}
+pants <- data.frame(
+   type = c("Blue jeans","Grey jeans","Black jeans","Black suit","Blue tracksuit"),
+   label = c("X1", "X2", "X3", "X4", "X5"),
+   probability = c(0.5,0.3,0.1,0,0.1))
+
+pants
+```
+Probability distribution is simply the probabilities of these different events above. Each of the events has a probability that lies between 0 and 1, and if we add up the probability of all events, they sum to 1.
+
+```{r}
+#Try plotting a bar graph of all the probabilities above
+```
+
 
 Now let's take a look at some distributions.
 
