@@ -91,155 +91,58 @@ P(E) = P(X1) + P(X2) + P(X3)
 
 If any of these elementary events occurs, then E is also said to have occurred. Similarly, there are other rules satisfying probabilities:
 
+![Probability_rules](Fig5.png)
 
-Now let's take a look at some distributions.
+##### Binomial Distribution
 
-##### Generating Different types of distributions
+*Refer to section 9.4.1, Navarro D., for the detailed example*
 
-**Normal Distribution**
+Some basic terminology - We’ll let `N` denote the number of dice rolls in our experiment; which is often referred to as the `size parameter` of our binomial distribution. We’ll also use `θ` to refer to the the probability that a single die comes up skulls, a quantity that is usually called the `success probability` of the binomial. Finally, we’ll use `X` to refer to the results of our experiment, namely the number of skulls I get when I roll the dice. Since the actual value of X is due to chance, we refer to it as a `random variable`.
 
-One of the most common distributions in statistics is the ‘normal distribution’ aka Gaussian Distribution, well known as the ‘bell curve’ due to its characteristic bell shape.
+`X ~ Binomial(θ, N)` denotes X is generated randomly from a binomial distribution with parameters θ and N.
 
-Let's generate a Normal distribution: 
+Let's generate a binomial distribution in R:
 
 ```{r}
-# Here we are generating a normal distribution having 100 data points selected randomly. Try varying this number from 10 to 1000 and check the distribution plot.
-x <- rnorm(100)
-hist(x, col = 'steelblue')
-abline(v = mean(x), lty = 2, lwd = 2)
+dbinom( n = 4, size = 20, prob = 1/6 )
 ```
-How to generate a binomial distribution:
-Here we have generated a 
-```{r}
-z<-rbinom( n = 100, size = 20, prob = 1/6 )
+The above command calculates the probability of getting x = 4 skulls, from an experiment of size = 20 trials, in which the probability of getting a skull on any one trial is prob = 1/6.
 
+What if the dice is replaced by a coin in the above example? How will the probability change? 
+
+```{r}
+#Try finding the probability for N = 20 and N=100 trials for a fair coin flip.
+```
+There are different functions in R for different distributions as well as different ones for finding different quantity of interest.
+
+If we want to find the probability of obtaining an outcome smaller than or equal to quantile q, then we can directly use `pbinom`.
+
+```{r}
+#Find the probability of rolling 0 skulls or 1 skull or 2 skulls or 3 skulls or 4 skulls
+pbinom( q= 4, size = 20, prob = 1/6)
+
+#Practice - Find probability of getting 0-5 heads in 50 trials of coin flip
+```
+In other words, value of 4 is actually the 76.9th percentile of this binomial distribution.
+
+Now let’s say we want to calculate the 75th percentile of the binomial distribution.
+
+```{r}
+qbinom( p = 0.75, size = 20, prob = 1/6 )
+
+#Practice - Find the 40th percentile
+```
+
+We've found different quantities. What if we want to simulate the above experiments. We specify how many times R should “simulate” the experiment using the n argument, and it will generate random outcomes from the binomial distribution using the `rbinom` function.
+
+```{r}
+z <- rbinom( n = 100, size = 20, prob = 1/6 )
+z
+#Let's also plot this and see how it looks
 hist(z, col = 'steelblue')
 ```
-Poisson Distribution
-```{r}
-y <- rpois(100, lambda = 1.2)
-hist(y, col = 'steelblue')
-abline(v = mean(y), lty = 2, lwd = 2)
-```
-Gamma Distribution
-```{r}
-x_dgamma <- seq(0, 2, by = 0.04)
-y_dgamma <- dgamma(x_dgamma, shape = 6)
-plot(y_dgamma)
-```
-mean as model
-```{r}
-z <- rnorm(50, mean = 5, sd = 2)
-mean(z)
-sd(z)
-quantile(z)
-quantile(z, 0.16)
-mean(x) - sd(x)
-mean(x) + sd(x)
-```
-Checking Normality of a distribution
+#Try plotting the distributions in above examples and vary the size, trial number and probability to generate different plots.
 
-```{r}
-CompanyABCProfit<-read.csv("CompanyABCProfit.csv")
-attach(CompanyABCProfit)
-install.packages("dplyr")
-install.packages("ggpubr")
-library("ggpubr")
-ggdensity(Profit,main="Profit per year", xlab="YEARLY PROFIT IN INR" )
-ggqqplot(Profit)
-ggplot(CompanyABCProfit) +     geom_point(mapping = aes(x = Year, y = Profit))
-shapiro.test(Profit)
-```
+All these different functions *d, p, q, n* are also applicable to other distributions. E.g. *dnorm, pnorm, qnorm, rnorm* for Normal distribution. 
 
-Generating a distribution and checking normality of the distribution
-```{r}
-N<- rnorm(100, mean=2, sd= 1.3 )
-P <- rpois(100, lambda = 1.2)
-#generate distribution z= p*N + (1-p)P
-Y = 0.1*N
-z= Y+P
-#test Normality
-shapiro.test(z) 
-plot(z)
-ggdensity(z)
-ggqqplot(z)
-```
-
-```{r}
-u=runif(40, min = -1, max = 1)
-N<- rnorm(100, mean=2, sd= 1.3 )
-#generate distribution z= p*N + (1-p)u where 0<p<1
-s = 0.1*N
-j=0.9*u
-q= s+j
-#test Normality
-shapiro.test(q) 
-plot(q)
-ggdensity(q)
-ggqqplot(q)
-boxplot(q)
-```
-Emotional Valence Data
-```{r}
-# Load tidyverse and Warriner et al. (2013) data:
-
-library(tidyverse)
-
-war <- read_csv('warriner_2013_emotional_valence.csv')
-
-# Check:
-
-war
-
-# Check valence measure range:
-
-range(war$Val)
-
-# Check the least and most positive wors:
-
-filter(war, Val == min(Val) | Val == max(Val))
-
-# Same thing, but more compact:
-
-filter(war, Val %in% range(Val))
-
-# Check tibble in ascending order:
-
-arrange(war, Val)
-
-# And descending order:
-
-arrange(war, desc(Val))
-
-#Mean and SD:
-
-mean(war$Val)
-sd(war$Val)
-
-# 68% rule:
-
-mean(war$Val) + sd(war$Val)
-mean(war$Val) - sd(war$Val)
-
-# Confirm:
-
-quantile(war$Val, c(0.16, 0.84))
-
-# Median:
-
-median(war$Val)
-
-# Which is the same as the 50th percentile:
-
-quantile(war$Val, 0.5)
-```
-
-```{r}
-ggdensity(war$Val)
-boxplot(war$Val)
-```
-1. Generate an alpha distribution.
-2. Generate a normal distribution with 150 data points and mean=2, standard deviation= 1.5 and a uniform distribution of maximum value 1, minimum value -1. Generate a distribution combining both using the equation, X= p*N + (p-1)u, where N= normal distribution, u= uniform distribution. X is generated new distribution. Vary the value of p= 1,2,3.. and check normality of distribution X. 
-3. Load the emotional valence dataset from warrinar et al. 2013 check mean valence, plot boxplot with indication of first and third quantile value int it. Check normality of the data. 
-
-
+End of part 1
