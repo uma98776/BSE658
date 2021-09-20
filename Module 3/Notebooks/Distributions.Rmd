@@ -146,3 +146,5 @@ hist(z, col = 'steelblue')
 All these different functions *d, p, q, n* are also applicable to other distributions. E.g. *dnorm, pnorm, qnorm, rnorm* for Normal distribution. 
 
 End of part 1
+
+Reference - *Chapter 9, Navarro D.*
