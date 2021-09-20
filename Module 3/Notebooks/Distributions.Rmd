@@ -21,6 +21,23 @@ A model is a simplified representation of a system. For example, the map of a ci
 But even though we know the models like 'P(heads) = 0.5', we do not know the data (Whetehr heads will come 10 times or 3 times). However, for statistics, it is the opposite. We have the data and we want to infer the truth about the world. For eg., If my friend flips a coin 10 times and gets 10 heads, are they playing a trick on me? or If the lottery commissioner’s spouse wins the lottery, how likely is it that the lottery was rigged?
 
 We want to figure out which is the true model of the world. Is it *P(heads) = 0.5* or is it *P(heads) $\ne$ 0.5*?
+
+##### What is probability really?
+
+**The frequentist view**
+
+![Frequentist_graph](Fig4.png)
+
+According to the frequentist view, flip a fair coin over and over again, and as N grows large (approaches infinity, denoted N Ñ 8), the proportion of heads will converge to 50%.
+
+ *Some desirable characteristics*
+ -  It is objective: the probability of an event is necessarily grounded in the world.
+ -  It is unambiguous: any two people watching the same sequence of events unfold, trying to calculate the probability of an event, must inevitably come up with the same answer.
+
+But it all depends on infinite flips of coin. Do infinities really exist in the physical universe? What about the probability for a single non-repeatable event like the chances of rain on 21 September 2021?
+
+**The Bayesian view**
+
 Now let's take a look at some distributions.
 
 ##### Generating Different types of distributions
