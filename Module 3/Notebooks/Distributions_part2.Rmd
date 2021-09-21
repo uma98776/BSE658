@@ -1,7 +1,28 @@
 ---
-title: "R Notebook"
+title: "Infeerntial Statistics: Probability & Distributions - 2"
 output: html_notebook
 ---
+
+In this notebook, we'll be looking at a few more distributions. 
+
+##### Normal Distribution
+The most common one is Normal Distribution or the "Bell curve" or a "Gaussian distribution". It is described using two parameters, the mean of the distribution μ and the standard deviation of the distribution σ. The notation that we sometimes use to say that a variable X is normally distributed is as follows:
+`X ~ Normal(μ, σ)`
+
+The functions for generating normal distribution are similar to the Binomial Distribution:
+
+- `dnorm()` - For probability density
+- `pnorm()` - For cumulative probability
+- `qnorm()` - For quantile of
+- `rnorm()` - For random number generation
+
+Let's generate a normal distribution having 100 data points selected randomly. Try varying this number from 10 to 1000 and check the distribution plot.
+
+```{r}
+x <- rnorm(100)
+hist(x, col = 'steelblue')
+abline(v = mean(x), lty = 2, lwd = 2)
+```
 
 Now let's take a look at some distributions.
 
