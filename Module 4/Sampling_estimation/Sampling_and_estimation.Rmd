@@ -218,15 +218,22 @@ Let's plot the sampling distribution of the standard deviation.
 
 ```{r}
 #Replicating 50 times 
-means <- 0 #Initializing vector
-for (i in 1:10000) {
-  IQ.n <- round(rnorm(n=5, mean = 100, sd = 15))
-  means[i] <- mean(IQ.n)
+sd_dist <- 0 #Initializing vector
+for (i in 1:50) {
+  IQ.n <- round(rnorm(n=2, mean = 100, sd = 15))
+  sd_dist[i] <- sd(IQ.n)
 }
-hist(means) #Plotting the sampling distribution of the mean
+hist(sd_dist) #Plotting the sampling distribution of the mean
 ```
 
+If we take a look at the average of this distribution, we can clearly see it is quite far from 15 whereas if we find the average of the sampling distribution of mean of population, it is quite close to the popuation mean. Try it out your self.
 
+```{r}
+mean(sd_dist)
+#Find the average for sampling distribution of population mean calculated above
+```
+
+On average, the average sample mean is equal to the population mean. It is an _unbiased estimator_, which is essentially the reason why the best estimate for the population mean is the sample mean. The plot on the right is quite different: on average, the sample standard deviation s is smaller than the population standard deviation σ. It is a _biased estimator_. In other words, if we want to make a “best guess” σˆ about the value of the population standard deviation σ, we should make sure our guess is a little bit larger than the sample standard deviation s.
 
 
 
