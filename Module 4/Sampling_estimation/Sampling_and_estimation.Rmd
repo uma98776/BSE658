@@ -208,5 +208,28 @@ But what is the true mean IQ for the entire population of Kanpur?
 
 Here we can only calculate the *sample mean*, and use that as our estimate of the *population mean*. If true population mean is denoted $\mu$, then we would use $\hat{\mu}$ to refer to our estimate of the population mean. The sample mean is denoted $\bar{X}$ or sometimes _m_.
 
+##### Estimating population standard deviation
+
+What shall we use as our estimate for the standard deviation? Your first thought might be that we could do the same thing we did when estimating the mean, and just use the sample statistic as our estimate. That’s almost the right thing to do, but not quite.
+
+Let's again think about the IQ experiment where we had assumed that population mean is 100 and standard deviation is 15. Say we only observe the IQ of 2 people and find the sample standard deviation. 
+
+Let's plot the sampling distribution of the standard deviation.
+
+```{r}
+#Replicating 50 times 
+means <- 0 #Initializing vector
+for (i in 1:10000) {
+  IQ.n <- round(rnorm(n=5, mean = 100, sd = 15))
+  means[i] <- mean(IQ.n)
+}
+hist(means) #Plotting the sampling distribution of the mean
+```
+
+
+
+
+
+
 
 
