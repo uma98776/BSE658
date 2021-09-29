@@ -241,13 +241,13 @@ Remember when we had talked about using N-1 instead of N for the calculation of 
 
 That is what we do to correct the bias.
 
-`![est_var](fig1.png)`
+![est_var](fig1.png)
 
-`![est_sd](fig2.png)`
+![est_sd](fig2.png)
 
 The important variables at a glance:
 
-`![variables](fig3.png)`
+![variables](fig3.png)
 
 
 Okay, so far we have tried to estimate some of the population parameters. But how confidently can we say that this the correct estimate of the parameter? How can we quantify the amount of uncertainty associated with the estimate?
@@ -362,8 +362,7 @@ plotmeans( formula = attendance ~ year,  # outcome ~ group
            n.label = FALSE)              # don’t show the sample sizes
 ```
 
-
-
+*Reference: Chapter 10, Navarro D.*
 
 
 
