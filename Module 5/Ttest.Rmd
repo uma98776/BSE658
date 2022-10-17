@@ -1,0 +1,86 @@
+---
+title: ""
+output: html_notebook
+---
+
+
+
+Install lsr, psych library if not already installed
+```{r}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set curretn path as workpath
+install.packages('psych')
+install.packages('lsr')
+```
+
+```{r}
+
+```
+
+
+```{r}
+library(lsr)
+load( file.path("zeppo.Rdata" )) 
+oneSampleTTest( x=grades, mu=67.5 ) #add the mu value here
+
+```
+
+
+```{r}
+
+load (file.path("harpo.Rdata" ))
+str(harpo)
+```
+
+```{r}
+head( harpo )
+```
+
+
+```{r}
+independentSamplesTTest( 
+      formula = grade ~ tutor,  # formula specifying outcome and group variables
+      data = harpo,             # data frame that contains the variables
+      var.equal = TRUE          # assume that the two groups have the same variance
+  )
+```
+```{r}
+independentSamplesTTest( 
+      formula = grade ~ tutor,  # formula specifying outcome and group variables
+      data = harpo              # data frame that contains the variables
+  )
+```
+
+
+```{r}
+load( file.path("chico.Rdata" ))
+str(chico) 
+```
+
+
+```{r}
+head( chico )
+```
+
+
+```{r}
+library( psych )
+describe( chico )
+```
+
+
+
+```{r}
+chico$improvement <- chico$grade_test2 - chico$grade_test1 
+```
+
+
+```{r}
+head( chico )
+```
+```{r}
+oneSampleTTest( chico$improvement, mu=0 )
+```
+```{r}
+wilcox.test( x = chico$improvement, mu=0)
+```
+

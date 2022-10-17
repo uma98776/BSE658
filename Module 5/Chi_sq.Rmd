@@ -1,0 +1,99 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library( lsr )
+load( file.path("randomness.Rdata" ))
+str(cards)
+```
+```{r}
+observed <- table( cards$choice_1 )
+observed
+```
+
+```{r}
+probabilities <- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
+probabilities
+```
+
+```{r}
+N <- 200  # sample size
+expected <- N * probabilities # expected frequencies
+expected
+```
+
+```{r}
+observed - expected 
+```
+
+```{r}
+(observed - expected)^2
+```
+
+```{r}
+(observed - expected)^2 / expected
+```
+
+```{r}
+sum( (observed - expected)^2 / expected )
+```
+
+```{r}
+qchisq( p = .95, df = 3 )
+```
+
+
+```{r}
+pchisq( q = 8.44, df = 3, lower.tail = FALSE )
+```
+
+```{r}
+1-pchisq( q = 8.44, df = 3 )
+```
+
+```{r}
+goodnessOfFitTest( cards$choice_1 )
+```
+
+```{r}
+nullProbs <- c(clubs = .2, diamonds = .3, hearts = .3, spades = .2)
+nullProbs
+```
+
+```{r}
+goodnessOfFitTest( x = cards$choice_1, p = nullProbs )
+```
+
+Chi Sq Association test With Chapek9
+
+```{r}
+load( file.path( "chapek9.Rdata" ))
+str(chapek9)
+```
+
+```{r}
+head(chapek9)
+```
+
+```{r}
+summary(chapek9)
+```
+
+```{r}
+chapekFrequencies <- xtabs( ~ choice + species, data = chapek9)
+chapekFrequencies
+```
+
+
+```{r}
+associationTest( formula = ~choice+species, data = chapek9 )
+
+```
+
+```{r}
+cramersV( chapekFrequencies )
+```
+
