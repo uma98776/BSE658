@@ -1,0 +1,59 @@
+---
+title: "ggplot"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### This notebook aims to explore working with ggplot2 package, ggplot enables fast and efficient plotting. 
+
+```{r}
+# Loading the packages
+library(tidyverse)
+library(dplyr)
+library(tibble)
+library(ggplot2)
+```
+
+
+```{r}
+# Importing covid testing data using tibble read_csv function
+covid_data <- read_csv('StatewiseTestingDetails.csv')
+```
+```{r}
+covid_data
+```
+### We will use ggplot2 to view the trend in covid positive cases in delhi state
+```{r}
+state_data = filter(covid_data, State=='Uttarakhand')
+state_data = arrange(state_data,Date)
+state_data
+```
+### Now that we have the data for Delhi arranged in ascending order of date, we will plot the number of cases 
+```{r}
+ggplot(state_data) + geom_point(mapping = aes(x=Date, y=Positive))
+```
+
+
+```{r}
+ggplot(state_data) + geom_text(mapping = aes(x=Date, y=Positive, label = Positive))
+```
+### Saving a plot
+```{r}
+ggsave('UK.png', width = 8, height = 6)
+```
+
+### Creating double plots
+#### For creating double plot we need to load an additional library _gridExtra_
+#### Let's create two plots for total samples and total positive cases for a particular state
+
+```{r}
+plot1 <- ggplot(state_data) + geom_point(mapping = aes(x=Date, y=TotalSamples))
+plot2 <- ggplot(state_data) + geom_point(mapping = aes(x=Date, y=Positive))
+library(gridExtra)
+grid.arrange(plot1, plot2, ncol = 2)
+```
+
+
+

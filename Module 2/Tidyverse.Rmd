@@ -1,0 +1,207 @@
+---
+title: "Working with Packages -- Tidyverse"
+output: html_notebook
+---
+
+This notebook aims to explain installing and working with tidyverse packages with some example functions implemented on data frames. Have fun!
+
+### What's a package in R?
+
+> In R, the fundamental unit of shareable code is the package. A package bundles together code, data, documentation, and tests, and is easy to share with others. - [Chapter 1: Introduction, R packages (2nd edition)](https://r-pkgs.org/Introduction.html)
+
+If you need to use a package, you need to first download it using `install.packages('package_name')` and then load the package using `library(package_name)`. This makes sure the installed package is fetched from **C**omprehensive **R** **A**rchive **N**etwork, or [**CRAN**](https://cran.r-project.org).
+
+*Q1. How would you install a package from a GitHub repository?*
+
+### Handling data using base R functions
+
+```{r}
+# Importing covid testing data 
+covid_testdata <- read.csv('StatewiseTestingDetails.csv')
+```
+
+```{r}
+# Using head function to view first few rows of the data
+head(covid_testdata)
+```
+
+```{r}
+# Using nrow()  and ncol() base R functions to view the number of rows and columns for the data
+nrow(covid_testdata)
+ncol(covid_testdata)
+```
+
+*Q2. How would you check the number of `NA` rows in the `Negative` column?*
+
+```{r Q2}
+sum(is.na(covid_testdata$Negative))
+```
+
+### [Tidyverse package](https://www.tidyverse.org)
+
+Tidyverse package contains a list of packages useful for working with data.
+
+```{r}
+# install.packages("tidyverse")
+library(tidyverse)
+```
+
+We are going to use `tibble` package from `tidyverse`: \`tibble is a modern package to work with data frames in a better way than base R functions.
+
+```{r}
+# converting the data to tibble
+covid_data <- as_tibble(covid_testdata)
+covid_data
+```
+
+We saw here that using *tibble* package made things easier: we had to separately use base R functions such as *head*, *nrow* and *ncol* functions to get the necessary information from our data frame, but these features are by default shown by *as_tibble*.
+
+So, you might ask how could I directly read a file as a tibble? Easy: all you have to do is use read_csv (instead of read.csv)
+
+```{r}
+covid_data <- read_csv('StatewiseTestingDetails.csv')
+covid_data
+```
+
+Now we will look at another tidyverse package, [**dplyr**](https://dplyr.tidyverse.org): it is used for editing tibbles.
+
+```{r}
+# library(dplyr)
+```
+
+We will look at `filter` and `select` functions from the dplyr package:
+
+> `filter` function works on rows e.g., if we want to reduce our data only to the days when there were more than 5000 covid positive cases, we can do that using:
+
+```{r}
+filter(covid_data, Positive > 5000)
+```
+
+Let's try `filter` to view data only for the state of Uttarakhand:
+
+```{r}
+filter(covid_data, State == 'Uttarakhand')
+```
+
+```{r}
+filter(covid_data, State == 'Uttarakhand' & Positive > 5000)
+```
+
+> `select` function is used to select columns e.g., if we just want to view the states and the total Samples collected
+
+```{r}
+select(covid_data, State, TotalSamples)
+select(covid_data, c(State, TotalSamples))
+```
+
+If we want to view all columns other than the column `Negative`, we can use '-' minus to eliminate that column:
+
+```{r}
+select(covid_data, -Negative)
+```
+
+Or you can select a few contiguous coloumns using `:` operator:
+
+```{r}
+select(covid_data, State:Positive)
+```
+
+> `rename` can be used to easily rename columns with an argument suggesting that *new_column_name* = *old_column_name*.
+
+```{r}
+rename(covid_data, Neg = Negative)
+covid_data
+```
+
+*Q3. Oops, what did go wrong here? Why can't we see the column name changed?*
+
+> `mutate` can be used to edit/manipulate the content of the tibble.
+
+Let's say if we want the proportion of positive cases, we can use `mutate` as shown below:
+
+```{r}
+newdata <- mutate(covid_data, prop = Positive/TotalSamples)
+newdata
+```
+
+*Q4. Can you add a new column in the tibble without using `mutate`? If you can, why do you think we'll still need `mutate` for editing tibble?*
+
+> `arrange` function from dplyr package is used to arrange tibble data in an order.
+
+Let's arrange rows in the ascending order of `Date`.
+
+```{r}
+arrange(covid_data, Date)
+```
+
+By looking at the output of the above code, it seems like `arrange` function sorts the column in an ascending order. *Q5. How will you confirm that the default sorting order of `arrange` function?*
+
+Let's arrange the rows in the descending order of number of positive cases:
+
+```{r}
+arrange(covid_data, desc(Positive))
+```
+
+### Writing and reading files
+
+Now you may want to save this modified file for future use. Make sure you have saved the changes made in the file by using the assignment operator.
+
+To save this file, you can simply use the write command:
+
+```{r}
+write.csv(covid_data, file= "covid_data_copy.csv")
+```
+
+You may then later want to read the file into your workspace. For this you can use the read command.
+
+```{r}
+covid_data <- read.csv(file= "covid_data_copy.csv")
+```
+
+To find your current working directory and see the files in the directory:
+
+```{r}
+getwd() #current directory
+list.files() # list all files in the directory
+```
+
+### What's in a package for you?
+
+> But packages are useful even if you never share your code. As Hilary Parker says in her [introduction to packages](https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/): "Seriously, it doesn't have to be about sharing your code (although that is an added benefit!). It is about saving yourself time." Organising code in a package makes your life easier because packages come with conventions. For example, you put R code in `R/`, you put tests in `tests/` and you put data in `data/`... - [Chapter 1: Introduction, R packages (2nd edition)](https://r-pkgs.org/Introduction.html)
+
+### The pipe operator, `%>%`:
+
+Imagine an ordered set of manipulations you would want to do on your data frame stored in the current work space as a tibble. Would you really like to save the output of each one of those manipulations as a new (or maybe the same) variable? May be not. The pipe operator `%>%` helps you to do such a one-shot ordered manipulation.
+
+Let's directly take a look at an example:
+
+```{r}
+covid_data %>%
+  filter(State == 'Mizoram')
+```
+
+Whoa! It seems like `%>%` (referred as pipe operator) connects or pours the tibble to the function as an input.
+
+```{r}
+covid_data %>%
+  filter(State == "Mizoram") %>%
+  select(Date, Positive)
+```
+
+You can use the assignment operator to store the *product* of these manipulations:
+
+```{r}
+covid_data %>%
+  filter(State == "Mizoram") %>%
+  select(Date, Positive) ->
+  new_df
+```
+
+*Q6. Sometimes, it's better to use the variable name of the product in the first line of code chunk in which `%>%` is used multiple times. How would you do that?*
+
+### References:
+
+-   [What are the differences between "=" and "\<-" assignment operators?](https://stackoverflow.com/questions/1741820/what-are-the-differences-between-and-assignment-operators)
+-   [Understanding basic data types in R](https://resbaz.github.io/2014-r-materials/lessons/01-intro_r/data-structures.html)
+-   [Tidyverse](https://www.tidyverse.org)
+-   [Statistics from Linguists: An Introduction Using R](https://appliedstatisticsforlinguists.org/bwinter_stats_proofs.pdf)

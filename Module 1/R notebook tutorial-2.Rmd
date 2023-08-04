@@ -1,0 +1,45 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+---
+title: "Getting used to R notebooks"
+output: html_document
+---
+
+### Hi all, Welcome to statistics with R
+### This file is intended to make you familiar with R notebooks, if you are already an R user - thats good, but still you should have quick view of this tutorial, you may learn something new.
+
+##### This is an R Markdown notebook file, you might have noticed that this file has the format of *.Rmd*
+##### R Markdown or .Rmd is a file format for making dynamic documents with R. An R Markdown document is written in markdown (an easy-to-write plain text format) and contains chunks of embedded R code. Hence, this tutorial file can itself has plain text as well as embeded code. Currently, these instructions you are reading are in the markdown format, and if you wish to insert a chunck of code below it, you can do so by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*. So, why to wait, lets write a code chuck for printing "hello". 
+```{r}
+print('Hello')
+```
+
+##### Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. There can be several different output formats for this markdown file and you can mention it at the start of this file under output:, for this notebook it is mentioned 'html document' which outputs a .html file with the same name as of the .Rmd file. You might be already reading this in a .html output file in your browser, if not then you can always preview that html file in you browser to have a look.
+
+To know more about R Markdown you can visit this [link](http://rmarkdown.rstudio.com). 
+
+[R Markdown interface](https://rmarkdown.rstudio.com/lesson-2.html) notebook. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+### Knitting and converting
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+### Some basic markdown commands to make your text look good
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

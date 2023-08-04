@@ -1,0 +1,171 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+---
+title: "Introduction to R notebooks"
+output: html_document
+---
+
+### Welcome to statistics with R!
+
+
+This tutorial notebook is intended to introduce and make you familiar with **R notebooks**. Even if you have used R previously, you can take a quick glance at the tutorial and might learn something new.
+
+This is an R Markdown notebook file, you might have noticed that this file has the format of *.Rmd*.
+First things first,
+
+##### What the heck is Markdown?
+Markdown is a [markup language](https://en.wikipedia.org/wiki/Markup_language) for creating formatted text using a plain-text editor. The idea and terminology evolved from the "marking up" of paper manuscripts (i.e., the revision instructions by editors), which is traditionally written with a red or blue pen on authors' manuscripts. Markdown using any language including R is just a *digital* version of such blue and red pen annotations.
+
+##### But what is an R Notebook then?
+R Notebook is simply an R Markdown document (a document written in the *language* R Markdown) with chunks that can be executed independently and interactively, with output visible immediately beneath the input. It is an implementation of [Literate Programming](https://en.wikipedia.org/wiki/Literate_programming) that allows for direct interaction with R while producing a reproducible document with publication-quality output. A notebook can therefore be thought of as a special execution mode for R Markdown documents.
+
+With the .Rmd file format, you can make such dynamic documents with R. In fact, this tutorial file itself is an R Notebook file with both plain text (that you're currently reading) and embeded code (which you'll insert below). 
+
+Before moving to code insertion, so far we've learnt that the R Notebook (R Markdown document)  is written in R markdown (an easy-to-write markup language) and contains chunks of embedded R code. 
+
+Now if you wish to insert a code chunk, you can do so by clicking the *Insert Chunk* button on the toolbar or you can by press *Ctrl+Alt+I*. (*mac: Cmd + option + I*). Let's write our first code chunk for printing "hello". *Try it yourself:* Insert a new code chunk to print "My First Markdown File".
+```{r}
+print('Hello')
+```
+
+Try executing the inserted chunk(s) by clicking the *Run* button (green arrowhead) within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+##### Some more information on R Markdown
+Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. There can be several different output formats for this markdown file and you can mention it at the start of this file under output:, for R notebooks, the output type is 'html document' which outputs a .html file with the same name as of the .Rmd file. You might be already reading this in a .html output file in your browser, if not then you can always *Preview* that html file in you browser to have a look.
+
+To know more about R Markdown you can visit this [link](http://rmarkdown.rstudio.com). 
+
+[R Markdown interface](https://rmarkdown.rstudio.com/lesson-2.html) notebook. 
+
+**_Suggested reading:_** Section 3.2 (R Notebook) and Sections 2.5, 2.6 (Markdown syntax) from the book - [R Markdown: The definitive guide](https://bookdown.org/yihui/rmarkdown/)
+
+#### R Markdown syntax
+The text in an R Markdown document is written with the Markdown syntax. More precisely, it is [Pandoc’s Markdown](https://pandoc.org/MANUAL.html). The following information has been adapted form the above mentioned book.
+
+_Note_ : It is suggested to view the file as HTML document for this section in order to see the effect of formatting. You can do so by clicking the Preview button in the toolbar.
+
+##### Inline formatting
+
+Inline text will be _italic_ if surrounded by underscores or asterisks, e.g., `_text_` or `*text*`. **Bold** text is produced using a pair of double asterisks (`**text**`). A pair of tildes (~) turn text to a subscript (e.g., `H~3~PO~4~` renders H~3~PO~4). A pair of carets (^) produce a superscript (e.g., `Cu^2+^` renders Cu^2+^). 
+
+To mark text as inline code, use a pair of backticks, e.g., `` `code` ``.
+
+Hyperlinks are created using the syntax `[text](link)`, e.g., `[RStudio](https://www.rstudio.com)` will output [RStudio](https://www.rstudio.com). The syntax for images is similar: just add an exclamation mark, e.g., `![alt text or image title](path/to/image)`. Footnotes are put inside the square brackets after a caret `^[]`, e.g., `^[This is a footnote.]`
+
+##### Block level elements
+Section headers can be written after a number of hashtags, e.g.,
+
+`# First-level header`
+
+# First-level header
+
+`## Second-level header`
+
+## Second-level header
+
+`### Third-level header`
+
+### Third-level header
+
+If you do not want a certain heading to be numbered, you can add {-} or {.unnumbered} after the heading, e.g.,
+
+`# Preface {-}`
+
+Unordered list items start with *, -, or +, and you can nest one list within another list by indenting the sub-list, e.g.,
+
+```
+- one item
+- one item
+- one item
+    - one more item
+    - one more item
+    - one more item
+```
+
+The output is:
+
+- one item
+
+- one item
+
+- one item
+
+  - one more item
+  
+  - one more item
+  
+  - one more item
+
+Ordered list items start with numbers (you can also nest lists within lists), e.g.,
+
+```
+1. the first item
+2. the second item
+3. the third item
+    - one unordered item
+    - one unordered item
+```
+
+The output does not look too much different with the Markdown source:
+
+1. the first item
+
+2. the second item
+
+3. the third item
+
+    - one unordered item
+    
+    - one unordered item
+    
+Plain code blocks can be written after three or more backticks.
+````
+```
+Just like this
+```
+````
+
+#### All about Code chunks
+You inserted a code chunk in the beginning and therefore you now know that code chunks can be inserted by either using the RStudio toolbar (the `Insert` button) or the keyboard shortcut `Ctrl + Alt + I` (`Cmd + Option + I` on macOS). There are a lot of things you can do in a code chunk: you can produce text output, tables, or graphics. You have fine control over all these output via chunk options, which can be provided inside the curly braces (between ```` ```{r and }````). For example, you can choose hide text output via the chunk option `results = 'hide'`, or set the figure height to 4 inches via `fig.height = 4`. Chunk options are separated by commas, e.g.,
+
+**```{r, chunk-label, results='hide', fig.height=4}**
+
+A few of the options are:
+
+`echo = FALSE` Whether to echo the source code in the output document (someone may not prefer reading your smart source code but only results)
+
+`include = FALSE` prevents code and results from appearing in the finished file. R Markdown still runs the code in the chunk, and the results can be used by other chunks.
+
+`message = FALSE` prevents messages that are generated by code from appearing in the finished file.
+
+`warning = FALSE` prevents warnings that are generated by code from appearing in the finished.
+
+`fig.cap = "..."` adds a caption to graphical results.
+
+##### Plotting figures:
+By default, figures produced by R code will be placed immediately after the code chunk they were generated from. For example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+Notice the `echo = 'FALSE'` option added in the code in the source file. That is why the code for the above plot is not visible in the HTML output file.
+
+##### Creating tables
+
+```{r tables-mtcars}
+knitr::kable(iris[1:5, ], caption = 'A caption')
+```
+
+You might have noticed `knitr` in the above code chunk. So let's briefly know about Knitr here. 
+
+##### Knitr - 
+It is a package in the programming language R that enables integration of R code into LaTeX, LyX, HTML, Markdown, AsciiDoc, and reStructuredText documents. _Note_ - Packages will be introduced in a separate tutorial.
+
+In the R Studio toolbar, where you can see the `Preview` button, if you click on the drop down arrow next to it, you will find the options `Knit to HTML`, `Knit to PDF`, `Knit to Word` etc. When you click the **Knit** button the specific output document will be generated that includes both content as well as the result of any embedded R code chunks within the notebook.
+
+Before, we end this introductory tutorial, here's a [cheatsheet](https://rmarkdown.rstudio.com/lesson-15.html) for working with R Markdown and Notebooks for easy and quick reference.
+
+Now that you've learnt about R Notebooks, you are ready to create your own and get started : Go to `File -> New File -> R Notebook`, or if you have opened an `R markdown` file, you can specify the output type as `html_notebook` in the document’s YAML metadata. Have fun working with R Notebooks!
