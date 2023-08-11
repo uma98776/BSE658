@@ -8,7 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ### This notebook aims to explore working with ggplot2 package, ggplot enables fast and efficient plotting. 
 
-```{r}
+```{r warning=FALSE}
 # Loading the packages
 library(tidyverse)
 library(dplyr)
@@ -21,28 +21,38 @@ library(ggplot2)
 # Importing covid testing data using tibble read_csv function
 covid_data <- read_csv('StatewiseTestingDetails.csv')
 ```
+
 ```{r}
 covid_data
 ```
+
+```{r}
+## this drops the NA values from all rows
+covid_data <- na.omit(covid_data)
+```
+
+
 ### We will use ggplot2 to view the trend in covid positive cases in delhi state
 ```{r}
-state_data = filter(covid_data, State=='Uttarakhand')
+state_data = filter(covid_data, State=='Delhi')
 state_data = arrange(state_data,Date)
 state_data
 ```
+
 ### Now that we have the data for Delhi arranged in ascending order of date, we will plot the number of cases 
 ```{r}
-ggplot(state_data) + geom_point(mapping = aes(x=Date, y=Positive))
+ggplot(state_data, aes(x=Date, y=Positive)) # + geom_point()
 ```
-
 
 ```{r}
 ggplot(state_data) + geom_text(mapping = aes(x=Date, y=Positive, label = Positive))
 ```
+
 ### Saving a plot
 ```{r}
-ggsave('UK.png', width = 8, height = 6)
+ggsave('Delhi.png', width = 8, height = 6)
 ```
+
 
 ### Creating double plots
 #### For creating double plot we need to load an additional library _gridExtra_
@@ -54,6 +64,41 @@ plot2 <- ggplot(state_data) + geom_point(mapping = aes(x=Date, y=Positive))
 library(gridExtra)
 grid.arrange(plot1, plot2, ncol = 2)
 ```
+
+## Lets try more things with another dataset!!
+```{r}
+data(mpg)
+?mpg
+```
+
+### Let's plot!!
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, color = class)) + geom_point()
+```
+
+### Making the plots look more nicer!
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, color = class)) + geom_point() + 
+  labs(title = "Fuel Efficiency by Engine Power",
+       subtitle = "Fuel economy data from 1999 and 2008 for 38 popular models of cars",
+       x = "Engine power (litres displacement)",
+       y = "Fuel Efficiency (miles per gallon)",
+       color = "Car Type") + theme_classic()
+```
+
+### Faceting 
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point() +
+  facet_grid(year ~ cyl)
+```
+
+## More on ggplot here: 
+https://uc-r.github.io/ggplot_intro 
+http://r-statistics.co/Complete-Ggplot2-Tutorial-Part1-With-R-Code.html 
+
+
+
 
 
 
